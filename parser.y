@@ -79,16 +79,17 @@ varDecType  : varOnlyDec
             | varInit
             ;
 
-varOnlyDec  : T_IDENTIFIER
+varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);} 
             | T_IDENTIFIER '[' T_INT_CONSTANT ']' 
             ;
 varInit :   varOnlyDec T_ASSIGN assignmentExpression;
 
 type    : type pointer
-        | T_INT
-        | T_FLOAT
-        | T_DOUBLE
-        | T_CHAR
+        | T_INT {curr_data_type = strdup("INT");}
+        | T_FLOAT {curr_data_type = strdup("FLOAT");}
+        | T_DOUBLE {curr_data_type = strdup("DOUBLE");}
+        | T_CHAR {curr_data_type = strdup("CHAR");}
+        | T_LONG_INT
         | T_VOID
         | T_BOOL
         ;

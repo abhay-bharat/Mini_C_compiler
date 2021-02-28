@@ -1,7 +1,9 @@
 #include<stdio.h>
 int main()
 {
-	int a = 4, b;
+	int b;
+	float a = a + 1.0;
+	printf(b);
 	// int b;
 }
 

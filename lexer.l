@@ -17,6 +17,8 @@
 	extern symtab_t* SymbolTable;
 	//scope for indicating the scope of the variable
 	extern int scope = 0; 
+
+	
 %}
 
 alpha [A-Za-z]
@@ -33,6 +35,7 @@ tab ['\t']
 line ['\n']
 string \"(.^([%d]|[%f]|[%s]|[%c]))\"
 identifier (_|{alpha})({alpha}|{digit}|_)*
+input_output ("printf"|"scanf"|"fprintf"|"fscanf"|"getc"|"putc"|"fgetc"|"fputc")
 
 /* States */
 %x PREPROCESSOR
@@ -97,6 +100,10 @@ return 		{ printf("<keyword, %s>\n", yytext);
 main		{ printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_MAIN;
+			}
+{input_output}      { //It is a identifier of type builtin function name, it cannot be called as keyword
+				columnNo += yyleng;
+				return T_IDENTIFIER;
 			}
 
 "\t"          {columnNo += 4;}
@@ -269,10 +276,10 @@ main		{ printf("<keyword, %s>\n", yytext);
 			 }
 
 
-.			{ printf("<symbol, %c>\n", yytext[0]);
+.			{ printf("< symbol, %c >\n", yytext[0]);
 			  columnNo += yyleng;
-				if(scope > 0)
-					yyerror("Unmatched number of '{}'");
+				//if(scope > 0)
+					//yyerror("Unmatched number of '{}'"); unmatched paranthesis to be matched in the semantic analysis phase
 			return yytext[0];}
 
 
