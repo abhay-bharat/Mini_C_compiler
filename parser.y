@@ -260,7 +260,6 @@ expression : T_IDENTIFIER assignmentOp rValExpression
 
 void display_symbolTable()
 {
-    printf("\n\tSymbol Table");
     Display(SymbolTable);
 }
 extern FILE* yyin;

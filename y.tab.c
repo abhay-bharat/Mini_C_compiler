@@ -1745,7 +1745,6 @@ yyreturn:
 
 void display_symbolTable()
 {
-    printf("\n\tSymbol Table");
     Display(SymbolTable);
 }
 extern FILE* yyin;

@@ -158,8 +158,8 @@ main		{ printf("<keyword, %s>\n", yytext);
 {identifier}	{
 					if(strlen(yytext) <= 32)
 					{
-						insert(SymbolTable, "T_IDENTIFIER", yytext, scope, yylineno, columnNo);
-						yylval.tbEntry = exists(SymbolTable, yytext);
+						insert(SymbolTable, "T_IDENTIFIER", yytext, scope, yylineno, columnNo, columnNo+yyleng);
+						yylval.tbEntry = exists(SymbolTable, yytext, scope);
 						return T_IDENTIFIER;
 					}
 					else
