@@ -1,4 +1,3 @@
- 
 %{
     //header files
     #include<stdio.h>
@@ -61,10 +60,11 @@
 
 %%
 
-program : declarations; //handle define and macros in lex
-declarations : declarations declaration
+program : declarations //handle define and macros in lex
+        | 
+        ; 
+declarations : declaration declarations
              | declaration
-             |
              ;
 declaration : varDec ';'
             | funcDec
@@ -79,9 +79,12 @@ varDecType  : varOnlyDec
             | varInit
             ;
 
-varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);} 
-            | T_IDENTIFIER '[' T_INT_CONSTANT ']' 
+varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);}
+            | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type);}
             ;
+arrayDims : '[' T_INT_CONSTANT ']' arrayDims
+          | '[' T_INT_CONSTANT ']'
+          ;
 varInit :   varOnlyDec T_ASSIGN assignmentExpression;
 
 type    : type pointer
@@ -89,9 +92,8 @@ type    : type pointer
         | T_FLOAT {curr_data_type = strdup("FLOAT");}
         | T_DOUBLE {curr_data_type = strdup("DOUBLE");}
         | T_CHAR {curr_data_type = strdup("CHAR");}
-        | T_LONG_INT
-        | T_VOID
-        | T_BOOL
+        | T_VOID {curr_data_type = strdup("VOID");}
+        | T_BOOL {curr_data_type = strdup("BOOL");}
         ;
 
 pointer : T_MULTIPLY pointer
@@ -149,6 +151,7 @@ expression : T_IDENTIFIER assignmentOp assignmentExpression
            | logicalExpression
            ;
 
+
 assignmentExpression : ternaryOpExpression 
                      | T_IDENTIFIER assignmentOp assignmentExpression;
 
@@ -193,7 +196,6 @@ factor  : T_IDENTIFIER
         | '(' expression ')'
         | constants
         ;
-
 statement : expressionStmt
           | blockStmt
           | selectionStmt
@@ -217,45 +219,49 @@ selectionStmt : T_IF '(' logicalExpression ')' statement %prec T_IFX
 iterationStmt : T_WHILE '(' logicalExpression ')' statement;
 returnStmt : T_RETURN expressionStmt;
 breakStmt : T_BREAK ';' ;
+
 /*
-expression : ternaryOpExpression
+generalExpression : ternaryOpExpression
                   | logicalExpression
                   | relExpression
                   | arithExpression
                   | unaryExpression
                   | factor
+                  | assignmentExpression
+                  | expression
                   ;
-logicalExpression : expression T_LG_OR expression
-                  | expression T_LG_AND expression
-                  | T_NOT expression
+assignmentExpression : T_IDENTIFIER assignmentOp generalExpression ;
+logicalExpression : generalExpression T_LG_OR generalExpression
+                  | generalExpression T_LG_AND generalExpression
+                  | T_NOT generalExpression
                   ;
-relExpression   : expression T_GREATER_THAN expression
-                | expression T_LESSER_THAN expression
-                | expression T_LESSER_EQ expression
-                | expression T_GREATER_EQ expression
-                | expression T_NOT_EQ expression
-                | expression T_EQUAL expression
+relExpression   : generalExpression T_GREATER_THAN generalExpression
+                | generalExpression T_LESSER_THAN generalExpression
+                | generalExpression T_LESSER_EQ generalExpression
+                | generalExpression T_GREATER_EQ generalExpression
+                | generalExpression T_NOT_EQ generalExpression
+                | generalExpression T_EQUAL generalExpression
                 ;
-arithExpression : expression T_ADD expression 
-                | expression T_SUBTRACT expression 
-                | expression T_MULTIPLY expression 
-                | expression T_DIVIDE expression 
-                | expression T_MOD expression 
+arithExpression : generalExpression T_ADD generalExpression 
+                | generalExpression T_SUBTRACT generalExpression 
+                | generalExpression T_MULTIPLY generalExpression 
+                | generalExpression T_DIVIDE generalExpression 
+                | generalExpression T_MOD generalExpression 
                 ;
-unaryExpression : T_ADD expression
-                | T_SUBTRACT expression
+unaryExpression : T_ADD generalExpression
+                | T_SUBTRACT generalExpression
                 ;
 factor  : T_IDENTIFIER
-        | '(' expression ')'
+        | '(' generalExpression ')'
         | constants
         ;
-expression : T_IDENTIFIER assignmentOp rValExpression
+expression : T_IDENTIFIER assignmentOp generalExpression
            | T_INCREMENT T_IDENTIFIER
            | T_DECREMENT T_IDENTIFIER
            | expression
            |
-           ; */
-
+           ;
+*/
 %%
 
 void display_symbolTable()
