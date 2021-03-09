@@ -6,17 +6,17 @@
 	#include "symbol_table.h"
     #include "y.tab.h"
 
-	//void yyerror(char *s);
+	int yyerror(char* err);
 	//int yylex(void);
 	extern int yylineno;
 
 	//Count the columns
 	extern int yyleng;
-    extern int columnNo = 0;
+    int columnNo = 0;
 
 	extern symtab_t* SymbolTable;
 	//scope for indicating the scope of the variable
-	extern int scope = 0; 
+	int scope = 0; 
 
 	
 %}

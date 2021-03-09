@@ -74,8 +74,18 @@ void Display(symtab_t *table)
   printf("|\tpointer\t|\ttoken_name\t|\tlexeme\t|   data_type   |\t Scope \t|   Line no.    | Column_start  |  Column_end   |\n\n");
 
   node_t *temp = table->head;
+  node_t* prev = temp;
   while(temp != NULL){
+    if(temp->data_type){
     printf("|\t%d\t|\t%s\t|\t%s\t|\t%s\t|\t%d\t|\t%d\t|\t%d\t|\t%d\t|\n", temp->ptr, temp->token_name, temp->lexem, temp->data_type, temp->scope, temp->line_no, temp->column_st, temp->column_end);
+    prev = temp;
     temp = temp->next;
+    }
+    else{
+      node_t* temp_1 = temp;
+      prev->next = temp_1->next;
+      free(temp_1);
+      temp = prev->next;
+    }
   }
 }

@@ -5,6 +5,8 @@
     #include<stdlib.h>
     #include"symbol_table.h"
 
+
+    extern int scope, columnNo;
     //initialise symbol table
     symtab_t* SymbolTable = NULL;
 

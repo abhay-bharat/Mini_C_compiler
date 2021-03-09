@@ -70,6 +70,8 @@
     #include<stdlib.h>
     #include"symbol_table.h"
 
+
+    extern int scope, columnNo;
     //initialise symbol table
     symtab_t* SymbolTable = NULL;
 
@@ -79,7 +81,7 @@
     //keep track of data type of identifiers
     char* curr_data_type;
 
-#line 83 "y.tab.c" /* yacc.c:339  */
+#line 85 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -229,14 +231,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 19 "parser.y" /* yacc.c:355  */
+#line 21 "parser.y" /* yacc.c:355  */
 
     int ival;
     char* str;
     node_t *tbEntry;
     double dval;
 
-#line 240 "y.tab.c" /* yacc.c:355  */
+#line 242 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -253,7 +255,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 257 "y.tab.c" /* yacc.c:358  */
+#line 259 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -556,18 +558,18 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    63,    63,    64,    66,    67,    69,    70,    72,    74,
-      75,    78,    79,    82,    83,    85,    86,    88,    90,    91,
-      92,    93,    94,    95,    96,    99,   100,   103,   104,   105,
-     106,   107,   110,   111,   114,   115,   116,   118,   119,   121,
-     122,   124,   125,   127,   128,   131,   132,   134,   135,   138,
-     139,   140,   141,   142,   143,   145,   146,   148,   149,   150,
-     151,   155,   156,   158,   159,   160,   161,   164,   165,   167,
-     168,   170,   171,   173,   174,   175,   176,   177,   178,   179,
-     182,   183,   184,   186,   187,   188,   189,   191,   192,   193,
-     195,   196,   197,   199,   200,   201,   202,   203,   204,   205,
-     206,   208,   209,   211,   213,   214,   216,   217,   219,   220,
-     221
+       0,    65,    65,    66,    68,    69,    71,    72,    74,    76,
+      77,    80,    81,    84,    85,    87,    88,    90,    92,    93,
+      94,    95,    96,    97,    98,   101,   102,   105,   106,   107,
+     108,   109,   112,   113,   116,   117,   118,   120,   121,   123,
+     124,   126,   127,   129,   130,   133,   134,   136,   137,   140,
+     141,   142,   143,   144,   145,   147,   148,   150,   151,   152,
+     153,   157,   158,   160,   161,   162,   163,   166,   167,   169,
+     170,   172,   173,   175,   176,   177,   178,   179,   180,   181,
+     184,   185,   186,   188,   189,   190,   191,   193,   194,   195,
+     197,   198,   199,   201,   202,   203,   204,   205,   206,   207,
+     208,   210,   211,   213,   215,   216,   218,   219,   221,   222,
+     223
 };
 #endif
 
@@ -1481,55 +1483,55 @@ yyreduce:
   switch (yyn)
     {
         case 13:
-#line 82 "parser.y" /* yacc.c:1646  */
+#line 84 "parser.y" /* yacc.c:1646  */
     {(yyvsp[0].tbEntry)->data_type = strdup(curr_data_type);}
-#line 1487 "y.tab.c" /* yacc.c:1646  */
+#line 1489 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 83 "parser.y" /* yacc.c:1646  */
+#line 85 "parser.y" /* yacc.c:1646  */
     {(yyvsp[-1].tbEntry)->data_type = strdup(curr_data_type);}
-#line 1493 "y.tab.c" /* yacc.c:1646  */
+#line 1495 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 91 "parser.y" /* yacc.c:1646  */
+#line 93 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("INT");}
-#line 1499 "y.tab.c" /* yacc.c:1646  */
+#line 1501 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 92 "parser.y" /* yacc.c:1646  */
+#line 94 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("FLOAT");}
-#line 1505 "y.tab.c" /* yacc.c:1646  */
+#line 1507 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 93 "parser.y" /* yacc.c:1646  */
+#line 95 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("DOUBLE");}
-#line 1511 "y.tab.c" /* yacc.c:1646  */
+#line 1513 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 94 "parser.y" /* yacc.c:1646  */
+#line 96 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("CHAR");}
-#line 1517 "y.tab.c" /* yacc.c:1646  */
+#line 1519 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 95 "parser.y" /* yacc.c:1646  */
+#line 97 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("VOID");}
-#line 1523 "y.tab.c" /* yacc.c:1646  */
+#line 1525 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 96 "parser.y" /* yacc.c:1646  */
+#line 98 "parser.y" /* yacc.c:1646  */
     {curr_data_type = strdup("BOOL");}
-#line 1529 "y.tab.c" /* yacc.c:1646  */
+#line 1531 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1533 "y.tab.c" /* yacc.c:1646  */
+#line 1535 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1757,7 +1759,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 265 "parser.y" /* yacc.c:1906  */
+#line 267 "parser.y" /* yacc.c:1906  */
 
 
 void display_symbolTable()
