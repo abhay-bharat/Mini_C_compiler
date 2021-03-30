@@ -85,7 +85,7 @@ varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);}
             | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type);}
             ;
 arrayDims : '[' T_INT_CONSTANT ']' arrayDims
-          | '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nERROR : Arrays can't have dimension lesser than 1\n\n");}} 
+          | '[' T_INT_CONSTANT ']'
           ;
 varInit :   varOnlyDec T_ASSIGN assignmentExpression;
 
