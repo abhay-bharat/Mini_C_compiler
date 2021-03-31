@@ -269,6 +269,10 @@ expression : T_IDENTIFIER assignmentOp generalExpression {checkScope($1->lexem, 
 */
 %%
 
+extern FILE* yyin;
+extern int yylineno;
+extern char* yytext;
+
 void display_symbolTable()
 {
     Display(SymbolTable);
@@ -296,19 +300,17 @@ void checkScope(char* var, int curr_scope){
   
   if(!var_node_exists){
       //yyerror("Variable not declared");
-      printf("\nERROR := Variable %s not declared\n", var);
+      printf("\nLine : %d ERROR := Variable %s not declared\n", yylineno, var);
   }
   else{
     node_t* temp = exists(SymbolTable, var, curr_scope);
     if(temp && temp->data_type == NULL && temp->scope == curr_scope){
         //yyerror("Variable out of scope");
-        printf("\nERROR := Variable %s out of scope\n", var);
+        printf("\nLine : %d ERROR := Variable %s out of scope\n", yylineno, var);
     }
   }
 }
-extern FILE* yyin;
-extern int yylineno;
-extern char* yytext;
+
 int main(int argc, char* argv[])
 {
     SymbolTable = (symtab_t*)malloc(sizeof(symtab_t));
