@@ -293,15 +293,16 @@ int check_variable(symtab_t* table, char* var){
 
 void checkScope(char* var, int curr_scope){
   int var_node_exists = check_variable(SymbolTable, var);
+  
   if(!var_node_exists){
       //yyerror("Variable not declared");
-      printf("\nERROR : Variable not declared\n");
+      printf("\nERROR := Variable %s not declared\n", var);
   }
   else{
-    if(exists(SymbolTable, var, curr_scope) == NULL){
+    node_t* temp = exists(SymbolTable, var, curr_scope);
+    if(temp && temp->data_type == NULL && temp->scope == curr_scope){
         //yyerror("Variable out of scope");
-        printf("\nERROR : Variable out of scope\n");
-        
+        printf("\nERROR := Variable %s out of scope\n", var);
     }
   }
 }
