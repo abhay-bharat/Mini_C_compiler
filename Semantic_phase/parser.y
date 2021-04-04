@@ -12,7 +12,10 @@
 
     int yyerror(char* err);
     int yylex(void);
-
+    extern FILE* yyin;
+    extern int yylineno;
+    extern char* yytext;
+    int is_loop = 0;
     //keep track of data type of identifiers
     char* curr_data_type;
 %}
@@ -84,8 +87,8 @@ varDecType  : varOnlyDec
 varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);}
             | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type);}
             ;
-arrayDims : '[' T_INT_CONSTANT ']' arrayDims
-          | '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nERROR : Arrays can't have dimension lesser than 1\n\n");}} 
+arrayDims : '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} arrayDims
+          | '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} 
           ;
 varInit :   varOnlyDec T_ASSIGN assignmentExpression;
 
@@ -206,6 +209,7 @@ statement : expressionStmt
           | iterationStmt
           | returnStmt
           | breakStmt
+          | contStmt
           | funcCall
           | varDec ';'
           ;
@@ -220,9 +224,21 @@ stmtList : statement stmtList
 selectionStmt : T_IF '(' logicalExpression ')' statement %prec T_IFX
               | T_IF '(' logicalExpression ')' statement T_ELSE statement
               ;
-iterationStmt : T_WHILE '(' logicalExpression ')' statement;
+iterationStmt : T_WHILE '(' logicalExpression ')' {is_loop = 1;} statement {is_loop = 0;};
 returnStmt : T_RETURN expressionStmt;
-breakStmt : T_BREAK ';' ;
+breakStmt : T_BREAK ';' {
+                          if(!is_loop)
+                          {
+                            printf("Line : %d ERROR : break outside loop\n", yylineno);
+                          }
+                        }
+                        ;
+contStmt : T_CONTINUE ';' {if(!is_loop)
+                          {
+                            printf("Line : %d ERROR : continue outside loop\n", yylineno);
+                          }
+                          }
+                          ;
 
 /*
 generalExpression : ternaryOpExpression
@@ -269,9 +285,6 @@ expression : T_IDENTIFIER assignmentOp generalExpression {checkScope($1->lexem, 
 */
 %%
 
-extern FILE* yyin;
-extern int yylineno;
-extern char* yytext;
 
 void display_symbolTable()
 {
@@ -300,13 +313,13 @@ void checkScope(char* var, int curr_scope){
   
   if(!var_node_exists){
       //yyerror("Variable not declared");
-      printf("\nLine : %d ERROR := Variable %s not declared\n", yylineno, var);
+      printf("\nLine : %d ERROR : Variable '%s' not declared\n", yylineno, var);
   }
   else{
     node_t* temp = exists(SymbolTable, var, curr_scope);
     if(temp && temp->data_type == NULL && temp->scope == curr_scope){
         //yyerror("Variable out of scope");
-        printf("\nLine : %d ERROR := Variable %s out of scope\n", yylineno, var);
+        printf("\nLine : %d ERROR : Variable '%s' out of scope\n", yylineno, var);
     }
   }
 }

@@ -93,6 +93,11 @@ break 		{ printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_BREAK;
 			}
+continue	{
+			  printf("<keyword, %s>\n", yytext);
+			  columnNo += yyleng;
+			  return T_CONTINUE;
+			}
 return 		{ printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_RETURN;
@@ -113,7 +118,7 @@ main		{ printf("<keyword, %s>\n", yytext);
 <PREPROCESSOR>{whitespace} 		;
 <PREPROCESSOR>"<"[^<>\n]*">"	{BEGIN INITIAL;}
 <PREPROCESSOR>\"[^<>\n]*\"		{BEGIN INITIAL;}
-<PREPROCESSOR>"\n"				{ yylineno++; 
+<PREPROCESSOR>"\n"				{ 
 								  BEGIN INITIAL;
 								  ErrFlag=1;
 								  columnNo = 0;	
@@ -164,7 +169,7 @@ main		{ printf("<keyword, %s>\n", yytext);
 					}
 					else
 					{
-						//printf("Error at line %d. Identifier name exceeds limit (length of identifier must be between 1 and 32 characters both inclusive).\n", yylineno);
+						//printf("Line %d ERROR : Identifier name exceeds limit (length of identifier must be between 1 and 32 characters both inclusive).\n", yylineno);
 						yyerror("Identifier name exceeds limit (length of identifier must be between 1 and 32 characters both inclusive).");
 						ErrFlag = 1;
 					}
@@ -173,19 +178,18 @@ main		{ printf("<keyword, %s>\n", yytext);
 
 "/*"			{BEGIN MLCOMMENT;}
 <MLCOMMENT>.		;
-<MLCOMMENT>"\n"		{++yylineno;}
-<MLCOMMENT><<EOF>>	{yyerror("EOF encountered while parsing multi line comment");
+<MLCOMMENT>"\n"		{}
+<MLCOMMENT><<EOF>>	{yyerror("ERROR : EOF encountered while parsing multi line comment");
 					yyterminate();
 					}
 <MLCOMMENT>"*/"	{BEGIN INITIAL;}
 
 "//"			{BEGIN SLCOMMENT;}
 <SLCOMMENT>.	;
-<SLCOMMENT><<EOF>>	{yyerror("EOF encountered while parsing single line comment");
+<SLCOMMENT><<EOF>>	{yyerror("ERROR : EOF encountered while parsing single line comment");
 					yyterminate();
 					}
-<SLCOMMENT>"\n" 	{++yylineno;
-				BEGIN INITIAL;}
+<SLCOMMENT>"\n" 	{BEGIN INITIAL;}
 
 "+"                                 {printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
@@ -267,11 +271,11 @@ main		{ printf("<keyword, %s>\n", yytext);
 				columnNo += yyleng;
 				if(scope < 0)
 					yyerror("Undefined scope");
-					return yytext[0];
+				return yytext[0];
 
 			}
 
-"\n"		{yylineno++;
+"\n"		{
 			 columnNo = 0;
 			 }
 
