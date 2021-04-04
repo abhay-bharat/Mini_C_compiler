@@ -59,11 +59,11 @@ void insert(symtab_t *table, char *tok_nam, char *lex, int scope,int line, int c
       }
       temp->next = new_node;
     }
-    display_token(new_node);
+    //display_token(new_node);
   }
   else
   {
-    display_token(get_row);
+    //display_token(get_row);
   }
 }
 

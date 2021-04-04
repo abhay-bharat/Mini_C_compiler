@@ -3,42 +3,45 @@
 int main()
 {
 	
-	int x;
-    int a[0];
-    int a = x + 1;
-    //printf("hello world");
-    if(1)
-    a = 10;
-    while(a < 10)
-    {
-        --a;
-    }
-    if(1)
-    {
-        a = 10;
-    }
-    else{
-        if(1)
-        a = 1;
-    }
-    break;
-    int b = 10;
-    while(b > 10)
-    {
-        if(b < 5)
-        {
-            b += 10;
-            continue;
-        }
-    }
-    continue;
-	int x;
-	{
-		int a = 0;
-	}
-	a = 10;
-
-}
+// 	int x;
+//     int a[0];
+//     int a = x + 1;
+//     //printf("hello world");
+//     if(1)
+//     a = 10;
+//     while(a < 10)
+//     {
+//         --a;
+//     }
+//     if(1)
+//     {
+//         a = 10;
+//     }
+//     else{
+//         if(1)
+//         a = 1;
+//     }
+//     break;
+//     int b = 10;
+//     while(b > 10)
+//     {
+//         if(b < 5)
+//         {
+//             b += 10;
+//             continue;
+//         }
+//     }
+//     continue;
+// 	int x;
+// 	{
+// 		int a = 0;
+// 	}
+// 	a = 10;
+    
+    int a = 1;
+    int b = 2;
+    int c = a+b;  
+ }
 
 /*
  

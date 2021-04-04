@@ -1016,7 +1016,7 @@ case 1:
 YY_RULE_SETUP
 #line 46 "lexer.l"
 { 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_INT;
 			}
@@ -1025,7 +1025,7 @@ case 2:
 YY_RULE_SETUP
 #line 51 "lexer.l"
 { 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_SHORT;
 			}
@@ -1034,7 +1034,7 @@ case 3:
 YY_RULE_SETUP
 #line 56 "lexer.l"
 { 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_LONG;
 			}
@@ -1043,7 +1043,7 @@ case 4:
 YY_RULE_SETUP
 #line 61 "lexer.l"
 { 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_FLOAT;
 			}
@@ -1052,7 +1052,7 @@ case 5:
 YY_RULE_SETUP
 #line 66 "lexer.l"
 { 	
-				printf("<keyword, %s>\n", yytext);
+				//printf("<keyword, %s>\n", yytext);
 				columnNo += yyleng;
 				return T_CHAR;
 			}
@@ -1061,7 +1061,7 @@ case 6:
 YY_RULE_SETUP
 #line 71 "lexer.l"
 { 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_DOUBLE;
 			}
@@ -1069,7 +1069,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 76 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_VOID;
 			}
@@ -1077,7 +1077,7 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 80 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_IF;
 			}
@@ -1085,7 +1085,7 @@ YY_RULE_SETUP
 case 9:
 YY_RULE_SETUP
 #line 84 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_ELSE;
 			}
@@ -1093,7 +1093,7 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 88 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_WHILE;
 			}
@@ -1101,7 +1101,7 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 92 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_BREAK;
 			}
@@ -1110,7 +1110,7 @@ case 12:
 YY_RULE_SETUP
 #line 96 "lexer.l"
 {
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_CONTINUE;
 			}
@@ -1118,7 +1118,7 @@ YY_RULE_SETUP
 case 13:
 YY_RULE_SETUP
 #line 101 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_RETURN;
 			}
@@ -1126,7 +1126,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 105 "lexer.l"
-{ printf("<keyword, %s>\n", yytext);
+{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_MAIN;
 			}
@@ -1189,7 +1189,7 @@ YY_RULE_SETUP
 #line 129 "lexer.l"
 { //insert(SymbolTable, "T_HEX_CONSTANT", yytext, scope); 
 			  									yylval.dval = (int)strtol(yytext, NULL, 16);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_HEX_CONSTANT;
 			  									}
@@ -1199,7 +1199,7 @@ YY_RULE_SETUP
 #line 135 "lexer.l"
 { //insert(SymbolTable, "T_INT_CONSTANT", yytext,scope);
 			  									yylval.dval = atoi(yytext);
-												printf("Constant, %d\n", (int)yylval.dval);
+												//printf("Constant, %d\n", (int)yylval.dval);
 												columnNo += yyleng;
 			  									return T_INT_CONSTANT;
 			  									}
@@ -1209,7 +1209,7 @@ YY_RULE_SETUP
 #line 141 "lexer.l"
 { //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
 			  									yylval.dval = atof(yytext);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
@@ -1219,7 +1219,7 @@ YY_RULE_SETUP
 #line 147 "lexer.l"
 { //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
 			  									yylval.dval = atof(yytext);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
@@ -1312,154 +1312,154 @@ YY_RULE_SETUP
 case 38:
 YY_RULE_SETUP
 #line 194 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_ADD;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 197 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_SUBTRACT;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 200 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MULTIPLY;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 203 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DIVIDE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 206 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MOD;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 209 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									columnNo += yyleng;
 									return T_ASSIGN;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 212 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DECREMENT;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 215 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_INCREMENT;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 218 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 								     columnNo += yyleng;
 									return T_ADD_ASSIGN;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 221 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_SUB_ASSIGN;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 224 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MUL_ASSIGN; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 227 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DIV_ASSIGN;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 230 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MOD_ASSIGN;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 234 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_GREATER_THAN;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 237 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LESSER_THAN;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 240 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 								     columnNo += yyleng;
 									return T_GREATER_EQ;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 243 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LESSER_EQ;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 246 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_EQUAL;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 250 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LG_OR;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 253 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LG_AND;}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 256 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_NOT;}
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 259 "lexer.l"
-{printf("< symbol, %s >\n", yytext);
+{//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_NOT_EQ;}
 	YY_BREAK
@@ -1495,7 +1495,7 @@ YY_RULE_SETUP
 case 63:
 YY_RULE_SETUP
 #line 283 "lexer.l"
-{ printf("< symbol, %c >\n", yytext[0]);
+{ //printf("< symbol, %c >\n", yytext[0]);
 			  columnNo += yyleng;
 				//if(scope > 0)
 					//yyerror("Unmatched number of '{}'"); unmatched paranthesis to be matched in the semantic analysis phase

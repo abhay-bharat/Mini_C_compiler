@@ -105,11 +105,11 @@ pointer : T_MULTIPLY pointer
         | T_MULTIPLY
         ;
 
-constants   : T_HEX_CONSTANT
-            | T_DEC_CONSTANT
-            | T_INT_CONSTANT
-            | T_BOOL_CONSTANT
-            | T_STRING 
+constants   : T_HEX_CONSTANT  {printf("\n %f \n", $1); }
+            | T_DEC_CONSTANT  {printf("\n %f \n", $1); }
+            | T_INT_CONSTANT  {printf("\n %f \n", $1); }
+            | T_BOOL_CONSTANT 
+            | T_STRING        {printf("\n %s \n", $1); }
             ;
 
 funcDec : funcOnlyDec ';'
@@ -186,22 +186,22 @@ relExpression :  sumExpression T_GREATER_THAN sumExpression
                 | sumExpression
                 ;
 
-sumExpression : sumExpression T_ADD prodExpression
-              | sumExpression T_SUBTRACT prodExpression
+sumExpression : sumExpression T_ADD prodExpression { printf("\n+\n"); }
+              | sumExpression T_SUBTRACT prodExpression {printf("\n-\n"); }
               | prodExpression
               ;
-prodExpression : prodExpression T_MULTIPLY unaryExpression
-               | prodExpression T_DIVIDE unaryExpression
+prodExpression : prodExpression T_MULTIPLY unaryExpression {printf("\n*\n"); }
+               | prodExpression T_DIVIDE unaryExpression {printf("\n / \n"); }
                | prodExpression T_MOD unaryExpression
                | unaryExpression
                ;
-unaryExpression : T_ADD unaryExpression
+unaryExpression : T_ADD unaryExpression 
                 | T_SUBTRACT unaryExpression
                 | factor
                 ;
-factor  : T_IDENTIFIER {checkScope($1->lexem, scope);}
+factor  : T_IDENTIFIER {checkScope($1->lexem, scope); printf("\nid=%s\n", $1->lexem);}
         | '(' expression ')'
-        | constants
+        | constants 
         ;
 statement : expressionStmt
           | blockStmt
@@ -252,22 +252,22 @@ generalExpression : ternaryOpExpression
                   ;
 assignmentExpression : T_IDENTIFIER assignmentOp generalExpression {checkScope($1->lexem, scope);}
                      ;
-logicalExpression : generalExpression T_LG_OR generalExpression
-                  | generalExpression T_LG_AND generalExpression
+logicalExpression : generalExpression T_LG_OR generalExpression {printf("\n || \n"); }
+                  | generalExpression T_LG_AND generalExpression {printf("\n && \n"); }
                   | T_NOT generalExpression
                   ;
-relExpression   : generalExpression T_GREATER_THAN generalExpression
-                | generalExpression T_LESSER_THAN generalExpression
-                | generalExpression T_LESSER_EQ generalExpression
-                | generalExpression T_GREATER_EQ generalExpression
-                | generalExpression T_NOT_EQ generalExpression
-                | generalExpression T_EQUAL generalExpression
+relExpression   : generalExpression T_GREATER_THAN generalExpression {printf("\n > \n"); }
+                | generalExpression T_LESSER_THAN generalExpression  {printf("\n < \n"); }
+                | generalExpression T_LESSER_EQ generalExpression    {printf("\n <= \n"); }
+                | generalExpression T_GREATER_EQ generalExpression   {printf("\n >= \n"); }
+                | generalExpression T_NOT_EQ generalExpression       {printf("\n != \n"); }
+                | generalExpression T_EQUAL generalExpression        {printf("\n == \n"); }
                 ;
-arithExpression : generalExpression T_ADD generalExpression 
-                | generalExpression T_SUBTRACT generalExpression 
-                | generalExpression T_MULTIPLY generalExpression 
-                | generalExpression T_DIVIDE generalExpression 
-                | generalExpression T_MOD generalExpression 
+arithExpression : generalExpression T_ADD generalExpression         {printf("\n + \n"); }
+                | generalExpression T_SUBTRACT generalExpression    {printf("\n - \n"); }
+                | generalExpression T_MULTIPLY generalExpression    {printf("\n * \n"); }
+                | generalExpression T_DIVIDE generalExpression      {printf("\n / \n"); }
+                | generalExpression T_MOD generalExpression         {printf("\n % \n"); }
                 ;
 unaryExpression : T_ADD generalExpression
                 | T_SUBTRACT generalExpression

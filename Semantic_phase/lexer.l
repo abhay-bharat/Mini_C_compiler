@@ -44,65 +44,65 @@ input_output ("printf"|"scanf"|"fprintf"|"fscanf"|"getc"|"putc"|"fgetc"|"fputc")
 %%
 
 int 		{ 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_INT;
 			}
 short 		{ 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_SHORT;
 			}
 long 		{ 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_LONG;
 			}
 float 		{ 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_FLOAT;
 			}
 char 		{ 	
-				printf("<keyword, %s>\n", yytext);
+				//printf("<keyword, %s>\n", yytext);
 				columnNo += yyleng;
 				return T_CHAR;
 			}
 double 		{ 
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_DOUBLE;
 			}
-void 		{ printf("<keyword, %s>\n", yytext);
+void 		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_VOID;
 			}
-if 			{ printf("<keyword, %s>\n", yytext);
+if 			{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_IF;
 			}
-else 		{ printf("<keyword, %s>\n", yytext);
+else 		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_ELSE;
 			}
-while 		{ printf("<keyword, %s>\n", yytext);
+while 		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_WHILE;
 			}
-break 		{ printf("<keyword, %s>\n", yytext);
+break 		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_BREAK;
 			}
 continue	{
-			  printf("<keyword, %s>\n", yytext);
+			  //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_CONTINUE;
 			}
-return 		{ printf("<keyword, %s>\n", yytext);
+return 		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_RETURN;
 			}
-main		{ printf("<keyword, %s>\n", yytext);
+main		{ //printf("<keyword, %s>\n", yytext);
 			  columnNo += yyleng;
 			  return T_MAIN;
 			}
@@ -128,25 +128,25 @@ main		{ printf("<keyword, %s>\n", yytext);
 
 [0][xX][0-9a-fA-F]+ 							{ //insert(SymbolTable, "T_HEX_CONSTANT", yytext, scope); 
 			  									yylval.dval = (int)strtol(yytext, NULL, 16);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_HEX_CONSTANT;
 			  									}
 [+-]?{digit}+									{ //insert(SymbolTable, "T_INT_CONSTANT", yytext,scope);
 			  									yylval.dval = atoi(yytext);
-												printf("Constant, %d\n", (int)yylval.dval);
+												//printf("Constant, %d\n", (int)yylval.dval);
 												columnNo += yyleng;
 			  									return T_INT_CONSTANT;
 			  									}
 {dec}											{ //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
 			  									yylval.dval = atof(yytext);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
 ({digit}*)["."]?{digits}[eE][+-]?{digits}		{ //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
 			  									yylval.dval = atof(yytext);
-												printf("Constant, %lf\n", yylval.dval);
+												//printf("Constant, %lf\n", yylval.dval);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
@@ -191,72 +191,72 @@ main		{ printf("<keyword, %s>\n", yytext);
 					}
 <SLCOMMENT>"\n" 	{BEGIN INITIAL;}
 
-"+"                                 {printf("< symbol, %s >\n", yytext);
+"+"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_ADD;}
-"-"                                 {printf("< symbol, %s >\n", yytext);
+"-"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_SUBTRACT;}
-"*"                                 {printf("< symbol, %s >\n", yytext);
+"*"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MULTIPLY;}
-"/"                                 {printf("< symbol, %s >\n", yytext);
+"/"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DIVIDE;}
-"%"                                 {printf("< symbol, %s >\n", yytext);
+"%"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MOD;}
-"="                                 {printf("< symbol, %s >\n", yytext);
+"="                                 {//printf("< symbol, %s >\n", yytext);
 									columnNo += yyleng;
 									return T_ASSIGN;}
-"--"                                {printf("< symbol, %s >\n", yytext);
+"--"                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DECREMENT;}
-"++"                                {printf("< symbol, %s >\n", yytext);
+"++"                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_INCREMENT;}
-"+="                                {printf("< symbol, %s >\n", yytext);
+"+="                                {//printf("< symbol, %s >\n", yytext);
 								     columnNo += yyleng;
 									return T_ADD_ASSIGN;}
-"-="                                {printf("< symbol, %s >\n", yytext);
+"-="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_SUB_ASSIGN;}
-"*="                                {printf("< symbol, %s >\n", yytext);
+"*="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MUL_ASSIGN; }
-"/="                                {printf("< symbol, %s >\n", yytext);
+"/="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_DIV_ASSIGN;}
-"%="                                {printf("< symbol, %s >\n", yytext);
+"%="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_MOD_ASSIGN;}
 
-">"                                 {printf("< symbol, %s >\n", yytext);
+">"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_GREATER_THAN;}
-"<"                                 {printf("< symbol, %s >\n", yytext);
+"<"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LESSER_THAN;}
-">="                                {printf("< symbol, %s >\n", yytext);
+">="                                {//printf("< symbol, %s >\n", yytext);
 								     columnNo += yyleng;
 									return T_GREATER_EQ;}
-"<="                                {printf("< symbol, %s >\n", yytext);
+"<="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LESSER_EQ;}
-"=="                                {printf("< symbol, %s >\n", yytext);
+"=="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_EQUAL;}
 
-"||"                                {printf("< symbol, %s >\n", yytext);
+"||"                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LG_OR;}
-"&&"                                {printf("< symbol, %s >\n", yytext);
+"&&"                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_LG_AND;}
-"!"                                 {printf("< symbol, %s >\n", yytext);
+"!"                                 {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_NOT;}
-"!="                                {printf("< symbol, %s >\n", yytext);
+"!="                                {//printf("< symbol, %s >\n", yytext);
 									 columnNo += yyleng;
 									return T_NOT_EQ;}
 
@@ -280,7 +280,7 @@ main		{ printf("<keyword, %s>\n", yytext);
 			 }
 
 
-.			{ printf("< symbol, %c >\n", yytext[0]);
+.			{ //printf("< symbol, %c >\n", yytext[0]);
 			  columnNo += yyleng;
 				//if(scope > 0)
 					//yyerror("Unmatched number of '{}'"); unmatched paranthesis to be matched in the semantic analysis phase
