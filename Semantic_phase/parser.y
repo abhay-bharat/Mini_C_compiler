@@ -317,7 +317,7 @@ void checkScope(char* var, int curr_scope){
   }
   else{
     node_t* temp = exists(SymbolTable, var, curr_scope);
-    if(temp && temp->data_type == NULL && temp->scope == curr_scope){
+    if(temp && temp->data_type == NULL && temp->scope > curr_scope){
         //yyerror("Variable out of scope");
         printf("\nLine : %d ERROR : Variable '%s' out of scope\n", yylineno, var);
     }
