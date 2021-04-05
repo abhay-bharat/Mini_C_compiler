@@ -39,8 +39,9 @@ int main()
 // 	a = 10;
     
     int a = 1;
-    int b = 2;
-    int c = a+b;  
+    int c = 2;
+    int d;
+    d = 1*2*3*4+5;
  }
 
 /*

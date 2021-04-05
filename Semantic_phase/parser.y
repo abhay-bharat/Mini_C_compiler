@@ -18,6 +18,9 @@
     int is_loop = 0;
     //keep track of data type of identifiers
     char* curr_data_type;
+
+    //space variable to beautify the syntax tree output
+    int space = 0;
 %}
 
 //data types of tokens
@@ -105,11 +108,11 @@ pointer : T_MULTIPLY pointer
         | T_MULTIPLY
         ;
 
-constants   : T_HEX_CONSTANT  {printf("\n %f \n", $1); }
-            | T_DEC_CONSTANT  {printf("\n %f \n", $1); }
-            | T_INT_CONSTANT  {printf("\n %f \n", $1); }
+constants   : T_HEX_CONSTANT  {printf("%f \n", $1); }
+            | T_DEC_CONSTANT  {printf("%f \n", $1); }
+            | T_INT_CONSTANT  {printf("%f \n", $1); }
             | T_BOOL_CONSTANT 
-            | T_STRING        {printf("\n %s \n", $1); }
+            | T_STRING        {printf("%s \n", $1); }
             ;
 
 funcDec : funcOnlyDec ';'
@@ -146,20 +149,20 @@ assignmentOp : T_ADD_ASSIGN
              | T_MUL_ASSIGN
              | T_DIV_ASSIGN
              | T_MOD_ASSIGN
-             | T_ASSIGN
+             | T_ASSIGN { for(int i = 0; i < space; ++i)printf("\t"); printf("=\n"); ++space;}
              ;
 ternaryOpExpression : logicalExpression '?' expression ':' ternaryOpExpression
                     | logicalExpression
                     ;
-expression : T_IDENTIFIER assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
-           | T_MULTIPLY T_IDENTIFIER assignmentOp assignmentExpression {checkScope($2->lexem, scope);}
+expression : T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
+           | T_MULTIPLY {for(int i = 0; i < space; ++i)printf("\t"); printf("*\n"); ++space; } T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $3->lexem);} assignmentOp assignmentExpression {checkScope($3->lexem, scope);}
            | incDecExpression
            | logicalExpression
            ;
 
 
 assignmentExpression : ternaryOpExpression 
-                     | T_IDENTIFIER assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
+                     | T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
                      ;
 
 incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
@@ -168,40 +171,40 @@ incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
                  | T_IDENTIFIER T_DECREMENT {checkScope($1->lexem, scope);}
                  ;
 
-logicalExpression : logicalExpression T_LG_OR andExpression
+logicalExpression : logicalExpression T_LG_OR {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("|| \n"); } andExpression   
                   | andExpression
                   ;
-andExpression : andExpression T_LG_AND notExpression
+andExpression : andExpression T_LG_AND {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("&& \n"); } notExpression          
               | notExpression
               ;
-notExpression : T_NOT notExpression
+notExpression : T_NOT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("^ \n"); } notExpression
               | relExpression
               ;
-relExpression :  sumExpression T_GREATER_THAN sumExpression
-                | sumExpression T_LESSER_THAN sumExpression
-                | sumExpression T_LESSER_EQ sumExpression
-                | sumExpression T_GREATER_EQ sumExpression
-                | sumExpression T_NOT_EQ sumExpression
-                | sumExpression T_EQUAL sumExpression
+relExpression :  sumExpression T_GREATER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("> \n"); } sumExpression   
+                | sumExpression T_LESSER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("< \n"); } sumExpression   
+                | sumExpression T_LESSER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); } sumExpression     
+                | sumExpression T_GREATER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); } sumExpression    
+                | sumExpression T_NOT_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("!= \n"); } sumExpression        
+                | sumExpression T_EQUAL {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("== \n"); } sumExpression         
                 | sumExpression
                 ;
 
-sumExpression : sumExpression T_ADD prodExpression { printf("\n+\n"); }
-              | sumExpression T_SUBTRACT prodExpression {printf("\n-\n"); }
+sumExpression : sumExpression T_ADD { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); } prodExpression 
+              | sumExpression T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("-\n"); } prodExpression 
               | prodExpression
               ;
-prodExpression : prodExpression T_MULTIPLY unaryExpression {printf("\n*\n"); }
-               | prodExpression T_DIVIDE unaryExpression {printf("\n / \n"); }
+prodExpression : prodExpression T_MULTIPLY {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("*\n"); } unaryExpression 
+               | prodExpression T_DIVIDE {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("/\n"); } unaryExpression 
                | prodExpression T_MOD unaryExpression
                | unaryExpression
                ;
 unaryExpression : T_ADD unaryExpression 
-                | T_SUBTRACT unaryExpression
+                | T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("- \n");} unaryExpression    
                 | factor
                 ;
-factor  : T_IDENTIFIER {checkScope($1->lexem, scope); printf("\nid=%s\n", $1->lexem);}
+factor  : T_IDENTIFIER {checkScope($1->lexem, scope); for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);}
         | '(' expression ')'
-        | constants 
+        | {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tconstant = "); } constants 
         ;
 statement : expressionStmt
           | blockStmt
