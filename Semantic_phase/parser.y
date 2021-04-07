@@ -110,7 +110,7 @@ pointer : T_MULTIPLY pointer
 
 constants   : T_HEX_CONSTANT  {printf("%f \n", $1); }
             | T_DEC_CONSTANT  {printf("%f \n", $1); }
-            | T_INT_CONSTANT  {printf("%f \n", $1); }
+            | T_INT_CONSTANT  {printf("%d \n", (int)$1); }
             | T_BOOL_CONSTANT 
             | T_STRING        {printf("%s \n", $1); }
             ;
