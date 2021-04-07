@@ -1,48 +1,49 @@
-#include<stdio.h>
+#include <stdio.h>
 
 int main()
 {
-	
-// 	int x;
-//     int a[0];
-//     int a = x + 1;
-//     //printf("hello world");
-//     if(1)
-//     a = 10;
-//     while(a < 10)
-//     {
-//         --a;
-//     }
-//     if(1)
-//     {
-//         a = 10;
-//     }
-//     else{
-//         if(1)
-//         a = 1;
-//     }
-//     break;
-//     int b = 10;
-//     while(b > 10)
-//     {
-//         if(b < 5)
-//         {
-//             b += 10;
-//             continue;
-//         }
-//     }
-//     continue;
-// 	int x;
-// 	{
-// 		int a = 0;
-// 	}
-// 	a = 10;
-    
-    int a = 1;
-    int c = 2;
-    int d;
-    d = 1*2*3*4+5;
- }
+
+        // 	int x;
+        //     int a[0];
+        //     int a = x + 1;
+        //     //printf("hello world");
+        //     if(1)
+        //     a = 10;
+        //     while(a < 10)
+        //     {
+        //         --a;
+        //     }
+        //     if(1)
+        //     {
+        //         a = 10;
+        //     }
+        //     else{
+        //         if(1)
+        //         a = 1;
+        //     }
+        //     break;
+        //     int b = 10;
+        //     while(b > 10)
+        //     {
+        //         if(b < 5)
+        //         {
+        //             b += 10;
+        //             continue;
+        //         }
+        //     }
+        //     continue;
+        // 	int x;
+        // 	{
+        // 		int a = 0;
+        // 	}
+        // 	a = 10;
+
+        int a = 1;
+        int c = 2;
+        char e = "a";
+        int d ;
+        d = 1 + 2 + f ;
+}
 
 /*
  

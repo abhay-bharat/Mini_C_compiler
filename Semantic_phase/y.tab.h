@@ -98,8 +98,8 @@ extern int yydebug;
     T_HEX_CONSTANT = 304,
     T_DEC_CONSTANT = 305,
     T_INT_CONSTANT = 306,
-    T_BOOL_CONSTANT = 307,
-    T_STRING = 308,
+    T_STRING = 307,
+    T_BOOL_CONSTANT = 308,
     T_IDENTIFIER = 309,
     T_IFX = 310
   };
@@ -154,8 +154,8 @@ extern int yydebug;
 #define T_HEX_CONSTANT 304
 #define T_DEC_CONSTANT 305
 #define T_INT_CONSTANT 306
-#define T_BOOL_CONSTANT 307
-#define T_STRING 308
+#define T_STRING 307
+#define T_BOOL_CONSTANT 308
 #define T_IDENTIFIER 309
 #define T_IFX 310
 
@@ -163,7 +163,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 27 "parser.y"
+#line 28 "parser.y"
 
     int ival;
     char* str;

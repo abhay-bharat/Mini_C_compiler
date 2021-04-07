@@ -9,7 +9,7 @@
     extern int scope, columnNo;
     //initialise symbol table
     symtab_t* SymbolTable = NULL;
-
+    symtab_t* ConstantTable = NULL;
     int yyerror(char* err);
     int yylex(void);
     extern FILE* yyin;
@@ -21,6 +21,7 @@
 
     //space variable to beautify the syntax tree output
     int space = 0;
+
 %}
 
 //data types of tokens
@@ -45,8 +46,8 @@
 //assignment operators
 %token T_ASSIGN T_DECREMENT T_INCREMENT
 //constants
-%token <dval> T_HEX_CONSTANT T_DEC_CONSTANT T_INT_CONSTANT T_BOOL_CONSTANT
-%token <str> T_STRING
+%token <dval> T_HEX_CONSTANT T_DEC_CONSTANT T_INT_CONSTANT 
+%token <str> T_STRING T_BOOL_CONSTANT
 //identifier
 %token <tbEntry> T_IDENTIFIER
 //start symbol
@@ -65,6 +66,9 @@
 
 %nonassoc T_IFX
 %nonassoc T_ELSE
+
+%type<str> varOnlyDec
+%type<str> factor expression expressionStmt  incDecExpression logicalExpression andExpression notExpression relExpression sumExpression prodExpression unaryExpression constants
 
 %%
 
@@ -87,13 +91,13 @@ varDecType  : varOnlyDec
             | varInit
             ;
 
-varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type);}
-            | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type);}
+varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type); $$ = $1->data_type;}
+            | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type); $$ = $1->data_type;}
             ;
 arrayDims : '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} arrayDims
           | '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} 
           ;
-varInit :   varOnlyDec T_ASSIGN assignmentExpression;
+varInit :   varOnlyDec T_ASSIGN expression {typeCheck($1, $3);};
 
 type    : type pointer
         | T_INT {curr_data_type = strdup("INT");}
@@ -108,11 +112,11 @@ pointer : T_MULTIPLY pointer
         | T_MULTIPLY
         ;
 
-constants   : T_HEX_CONSTANT  {printf("%f \n", $1); }
-            | T_DEC_CONSTANT  {printf("%f \n", $1); }
-            | T_INT_CONSTANT  {printf("%d \n", (int)$1); }
-            | T_BOOL_CONSTANT 
-            | T_STRING        {printf("%s \n", $1); }
+constants   : T_HEX_CONSTANT  {printf("%f \n", $1);  $$ = strdup("HEX");}
+            | T_DEC_CONSTANT  {printf("%f \n", $1); $$ = strdup("FLOAT");}
+            | T_INT_CONSTANT  {printf("%d \n", (int)$1); $$ = strdup("INT");}
+            | T_BOOL_CONSTANT {printf("%s \n", $1); $$ = strdup("BOOL");}
+            | T_STRING        {printf("%s \n", $1); $$ = strdup("CHAR");}
             ;
 
 funcDec : funcOnlyDec ';'
@@ -144,67 +148,68 @@ argList : argList ',' expression
         | expression
         ;
 
-assignmentOp : T_ADD_ASSIGN
-             | T_SUB_ASSIGN
-             | T_MUL_ASSIGN
+assignmentOp : T_ADD_ASSIGN 
+             | T_SUB_ASSIGN 
+             | T_MUL_ASSIGN 
              | T_DIV_ASSIGN
-             | T_MOD_ASSIGN
-             | T_ASSIGN { for(int i = 0; i < space; ++i)printf("\t"); printf("=\n"); ++space;}
+             | T_MOD_ASSIGN 
+             | T_ASSIGN { for(int i = 0; i < space; ++i)printf("\t"); printf("=\n"); ++space; }
              ;
-ternaryOpExpression : logicalExpression '?' expression ':' ternaryOpExpression
-                    | logicalExpression
-                    ;
-expression : T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
-           | T_MULTIPLY {for(int i = 0; i < space; ++i)printf("\t"); printf("*\n"); ++space; } T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $3->lexem);} assignmentOp assignmentExpression {checkScope($3->lexem, scope);}
-           | incDecExpression
-           | logicalExpression
+// ternaryOpExpression : logicalExpression '?' expression ':' ternaryOpExpression
+//                     | logicalExpression
+//                     ;
+expression : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}
+                          for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} 
+              assignmentOp expression {!typeCheck($1->data_type,$4);$$ = $1->data_type;}
+           | incDecExpression {$$ = $1;}
+           | logicalExpression {$$ = $1;}
            ;
 
 
-assignmentExpression : ternaryOpExpression 
-                     | T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
-                     ;
+// assignmentExpression : ternaryOpExpression 
+//                      | T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
+//                      ;
 
-incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
-                 | T_IDENTIFIER T_INCREMENT {checkScope($1->lexem, scope);}
-                 | T_DECREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
-                 | T_IDENTIFIER T_DECREMENT {checkScope($1->lexem, scope);}
+incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope); $$ = $2->data_type;}
+                 | T_IDENTIFIER T_INCREMENT {checkScope($1->lexem, scope); $$ = $1->data_type;}
+                 | T_DECREMENT T_IDENTIFIER {checkScope($2->lexem, scope); $$ = $2->data_type;}
+                 | T_IDENTIFIER T_DECREMENT {checkScope($1->lexem, scope); $$ = $1->data_type;}
                  ;
 
-logicalExpression : logicalExpression T_LG_OR {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("|| \n"); } andExpression   
-                  | andExpression
+logicalExpression : logicalExpression T_LG_OR {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("|| \n"); } andExpression {$$ = $1;}
+                  | andExpression  {$$ = $1;}
                   ;
-andExpression : andExpression T_LG_AND {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("&& \n"); } notExpression          
-              | notExpression
+andExpression : andExpression T_LG_AND {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("&& \n"); } notExpression  {$$ = $1;}     
+              | notExpression {$$ = $1;}
               ;
-notExpression : T_NOT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("^ \n"); } notExpression
-              | relExpression
+notExpression : T_NOT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("^ \n"); } notExpression  {$$ = $3;}
+              | relExpression  {$$ = $1;}
               ;
-relExpression :  sumExpression T_GREATER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("> \n"); } sumExpression   
-                | sumExpression T_LESSER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("< \n"); } sumExpression   
-                | sumExpression T_LESSER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); } sumExpression     
-                | sumExpression T_GREATER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); } sumExpression    
-                | sumExpression T_NOT_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("!= \n"); } sumExpression        
-                | sumExpression T_EQUAL {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("== \n"); } sumExpression         
-                | sumExpression
+relExpression :  sumExpression T_GREATER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("> \n"); } sumExpression {typeCheck($1, $4);$$ = $1;}   
+                | sumExpression T_LESSER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("< \n"); } sumExpression {typeCheck($1, $4);$$ = $1;}   
+                | sumExpression T_LESSER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); } sumExpression {typeCheck($1, $4);$$ = $1;}     
+                | sumExpression T_GREATER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;}   
+                | sumExpression T_NOT_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("!= \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;}       
+                | sumExpression T_EQUAL {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("== \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;}        
+                | sumExpression {$$ = $1;}
                 ;
 
-sumExpression : sumExpression T_ADD { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); } prodExpression 
-              | sumExpression T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("-\n"); } prodExpression 
-              | prodExpression
+sumExpression : sumExpression T_ADD { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); } prodExpression  {typeCheck($1, $4);$$ = $1;}
+              | sumExpression T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("-\n"); } prodExpression  {typeCheck($1, $4);$$ = $1;}
+              | prodExpression  {$$ = $1;}
               ;
-prodExpression : prodExpression T_MULTIPLY {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("*\n"); } unaryExpression 
-               | prodExpression T_DIVIDE {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("/\n"); } unaryExpression 
-               | prodExpression T_MOD unaryExpression
-               | unaryExpression
+prodExpression : prodExpression T_MULTIPLY {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("*\n"); } unaryExpression  {typeCheck($1, $4);$$ = $1;}
+               | prodExpression T_DIVIDE {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("/\n"); } unaryExpression  {typeCheck($1, $4);$$ = $1;}
+               | prodExpression T_MOD unaryExpression {typeCheck($1, $3);$$ = $1;}
+               | unaryExpression {$$ = $1;}
                ;
-unaryExpression : T_ADD unaryExpression 
-                | T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("- \n");} unaryExpression    
-                | factor
+unaryExpression : T_ADD {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+ \n");} unaryExpression  {$$ = $3;}
+                | T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("- \n");} unaryExpression   {$$ = $3;}  
+                | factor  {$$ = $1;}
                 ;
-factor  : T_IDENTIFIER {checkScope($1->lexem, scope); for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);}
-        | '(' expression ')'
-        | {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tconstant = "); } constants 
+factor  : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}; for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem); $$ = $1->data_type;} 
+        | '(' expression ')'  {$$ = $2;}
+        | {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tconstant = "); } constants  {$$ = $2;}
         ;
 statement : expressionStmt
           | blockStmt
@@ -243,55 +248,24 @@ contStmt : T_CONTINUE ';' {if(!is_loop)
                           }
                           ;
 
-/*
-generalExpression : ternaryOpExpression
-                  | logicalExpression
-                  | relExpression
-                  | arithExpression
-                  | unaryExpression
-                  | factor
-                  | assignmentExpression
-                  | expression
-                  ;
-assignmentExpression : T_IDENTIFIER assignmentOp generalExpression {checkScope($1->lexem, scope);}
-                     ;
-logicalExpression : generalExpression T_LG_OR generalExpression {printf("\n || \n"); }
-                  | generalExpression T_LG_AND generalExpression {printf("\n && \n"); }
-                  | T_NOT generalExpression
-                  ;
-relExpression   : generalExpression T_GREATER_THAN generalExpression {printf("\n > \n"); }
-                | generalExpression T_LESSER_THAN generalExpression  {printf("\n < \n"); }
-                | generalExpression T_LESSER_EQ generalExpression    {printf("\n <= \n"); }
-                | generalExpression T_GREATER_EQ generalExpression   {printf("\n >= \n"); }
-                | generalExpression T_NOT_EQ generalExpression       {printf("\n != \n"); }
-                | generalExpression T_EQUAL generalExpression        {printf("\n == \n"); }
-                ;
-arithExpression : generalExpression T_ADD generalExpression         {printf("\n + \n"); }
-                | generalExpression T_SUBTRACT generalExpression    {printf("\n - \n"); }
-                | generalExpression T_MULTIPLY generalExpression    {printf("\n * \n"); }
-                | generalExpression T_DIVIDE generalExpression      {printf("\n / \n"); }
-                | generalExpression T_MOD generalExpression         {printf("\n % \n"); }
-                ;
-unaryExpression : T_ADD generalExpression
-                | T_SUBTRACT generalExpression
-                ;
-factor  : T_IDENTIFIER {checkScope($1->lexem, scope);}
-        | '(' generalExpression ')'
-        | constants
-        ;
-expression : T_IDENTIFIER assignmentOp generalExpression {checkScope($1->lexem, scope);}
-           | T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
-           | T_DECREMENT T_IDENTIFIER {checkScope($2->lexem, scope);}
-           | expression
-           |
-           ;
-*/
 %%
 
 
 void display_symbolTable()
 {
     Display(SymbolTable);
+}
+
+int typeCheck(char *type1, char *type2){
+	
+  //printf("types: %s %s\n", a, b);
+	if(strcmp(type1,type2)!=0){
+		printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, type1, type2);
+		exit(0);
+	}
+
+	else 
+		return 1;
 }
 
 int check_variable(symtab_t* table, char* var){
@@ -311,20 +285,23 @@ int check_variable(symtab_t* table, char* var){
   return found;
 }
 
-void checkScope(char* var, int curr_scope){
+int checkScope(char* var, int curr_scope){
   int var_node_exists = check_variable(SymbolTable, var);
   
   if(!var_node_exists){
       //yyerror("Variable not declared");
       printf("\nLine : %d ERROR : Variable '%s' not declared\n", yylineno, var);
+      return 0;
   }
   else{
     node_t* temp = exists(SymbolTable, var, curr_scope);
     if(temp && temp->data_type == NULL && temp->scope > curr_scope){
-        //yyerror("Variable out of scope");
+        ("Variable out of scope");
         printf("\nLine : %d ERROR : Variable '%s' out of scope\n", yylineno, var);
+        return 0;
     }
   }
+  return 1;
 }
 
 int main(int argc, char* argv[])
@@ -348,6 +325,6 @@ int main(int argc, char* argv[])
 
 int yyerror(char* err)
 {
-    printf("Line no: %d Error message: %s Token: %s\n", yylineno, err, yytext);
+    printf("Line no: %d Error message: %s\n", yylineno, err);
     return 0;
 } 
