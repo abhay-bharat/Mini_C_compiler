@@ -15,6 +15,7 @@
     int columnNo = 0;
 
 	extern symtab_t* SymbolTable;
+	extern symtab_t* ConstantTable;
 	//scope for indicating the scope of the variable
 	int scope = 0; 
 
@@ -126,27 +127,21 @@ main		{ //printf("<keyword, %s>\n", yytext);
 <PREPROCESSOR>.					{ yyerror("Improper defined Header");}
 
 
-[0][xX][0-9a-fA-F]+ 							{ //insert(SymbolTable, "T_HEX_CONSTANT", yytext, scope); 
-			  									yylval.dval = (int)strtol(yytext, NULL, 16);
-												//printf("Constant, %lf\n", yylval.dval);
+[0][xX][0-9a-fA-F]+ 							{yylval.dval = (int)strtol(yytext, NULL, 16);
+												//insert(ConstantTable, "T_HEX_CONSTANT", yytext, scope, yylineno, columnNo, columnNo+yyleng);
+												//yylval.tbEntry = exists(ConstantTable, yytext, scope);
 												columnNo += yyleng;
 			  									return T_HEX_CONSTANT;
 			  									}
-[+-]?{digit}+									{ //insert(SymbolTable, "T_INT_CONSTANT", yytext,scope);
-			  									yylval.dval = atoi(yytext);
-												//printf("Constant, %d\n", (int)yylval.dval);
+[+-]?{digit}+									{yylval.dval = atoi(yytext);
 												columnNo += yyleng;
 			  									return T_INT_CONSTANT;
 			  									}
-{dec}											{ //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
-			  									yylval.dval = atof(yytext);
-												//printf("Constant, %lf\n", yylval.dval);
+{dec}											{yylval.dval = atof(yytext);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
-({digit}*)["."]?{digits}[eE][+-]?{digits}		{ //insert(SymbolTable, "T_DEC_CONSTANT", yytext, scope);
-			  									yylval.dval = atof(yytext);
-												//printf("Constant, %lf\n", yylval.dval);
+({digit}*)["."]?{digits}[eE][+-]?{digits}		{yylval.dval = atof(yytext);
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}

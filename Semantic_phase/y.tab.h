@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -29,6 +30,9 @@
 
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
+
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
@@ -94,8 +98,8 @@ extern int yydebug;
     T_HEX_CONSTANT = 304,
     T_DEC_CONSTANT = 305,
     T_INT_CONSTANT = 306,
-    T_BOOL_CONSTANT = 307,
-    T_STRING = 308,
+    T_STRING = 307,
+    T_BOOL_CONSTANT = 308,
     T_IDENTIFIER = 309,
     T_IFX = 310
   };
@@ -150,26 +154,25 @@ extern int yydebug;
 #define T_HEX_CONSTANT 304
 #define T_DEC_CONSTANT 305
 #define T_INT_CONSTANT 306
-#define T_BOOL_CONSTANT 307
-#define T_STRING 308
+#define T_STRING 307
+#define T_BOOL_CONSTANT 308
 #define T_IDENTIFIER 309
 #define T_IFX 310
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 27 "parser.y" /* yacc.c:1909  */
+#line 28 "parser.y"
 
     int ival;
     char* str;
     node_t *tbEntry;
     double dval;
 
-#line 171 "y.tab.h" /* yacc.c:1909  */
-};
+#line 174 "y.tab.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
