@@ -25,8 +25,9 @@ node_t* exists(symtab_t*, char*, int);
 void insert(symtab_t *table, char *tok_nam, char *lex, int scope, int line_no, int col_start, int col_end);
 void Display(symtab_t *table);
 //Functions used in parser for semantic analysis
-void checkScope(char* var, int curr_scope);
+int checkScope(char* var, int curr_scope);
 int check_variable(symtab_t* table, char* var);
+int typeCheck(char *type1, char *type2);
 
 #if 0
 node_t* create_node(int sl_no, char *tok, char *lex){

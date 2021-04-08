@@ -38,7 +38,7 @@ node_t *exists(symtab_t *table, char *lex, int scope)
   return NULL;
 }
 
-void insert(symtab_t *table, char *tok_nam, char *lex, int scope,int line, int col_s, int col_e)
+int insert(symtab_t *table, char *tok_nam, char *lex, int scope,int line, int col_s, int col_e)
 {
   node_t *get_row = exists(table, lex, scope);
   if (!get_row)
@@ -59,10 +59,12 @@ void insert(symtab_t *table, char *tok_nam, char *lex, int scope,int line, int c
       temp->next = new_node;
     }
     display_token(new_node);
+    return 1;
   }
   else
   {
     display_token(get_row);
+    return 0;
   }
 }
 
