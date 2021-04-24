@@ -6,7 +6,7 @@
 int sl_no = 0;
 
 
-node_t *create_node(int sl_no, char *tok, char *lex, int scope,int line, int col_s, int col_e)
+node_t *create_node(int sl_no, char *tok, char *lex, double value, int scope,int line, int col_s, int col_e)
 {
   node_t *node = (node_t *)malloc(sizeof(node_t));
   node->ptr = sl_no;
@@ -19,6 +19,7 @@ node_t *create_node(int sl_no, char *tok, char *lex, int scope,int line, int col
   node->column_end = col_e;
   node->line_no = line;
   node->data_type = NULL;
+  node->value = value;
   return node;
 }
 
@@ -39,13 +40,13 @@ node_t *exists(symtab_t *table, char *lex, int scope)
   return NULL;
 }
 
-void insert(symtab_t *table, char *tok_nam, char *lex, int scope,int line, int col_s, int col_e)
+void insert(symtab_t *table, char *tok_nam, char *lex, double value, int scope,int line, int col_s, int col_e)
 {
   node_t *get_row = exists(table, lex, scope);
   if (!get_row)
   {
     ++sl_no;
-    node_t *new_node = create_node(sl_no, tok_nam, lex, scope,line, col_s, col_e);
+    node_t *new_node = create_node(sl_no, tok_nam, lex, value, scope,line, col_s, col_e);
     if (table->head == NULL)
     {
       table->head = new_node;

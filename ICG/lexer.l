@@ -2,6 +2,7 @@
 	#include<stdio.h>
 	#include<stdlib.h>
 	#include<string.h>
+	#include<limits.h>
 	int ErrFlag = 0;
 	#include "symbol_table.h"
     #include "y.tab.h"
@@ -128,20 +129,30 @@ main		{ //printf("<keyword, %s>\n", yytext);
 
 
 [0][xX][0-9a-fA-F]+ 							{yylval.dval = (int)strtol(yytext, NULL, 16);
-												//insert(ConstantTable, "T_HEX_CONSTANT", yytext, scope, yylineno, columnNo, columnNo+yyleng);
-												//yylval.tbEntry = exists(ConstantTable, yytext, scope);
+												insert(ConstantTable, "T_HEX_CONSTANT", yytext, (int)strtol(yytext, NULL, 16), scope, yylineno, columnNo, columnNo+yyleng);
+												yylval.tbEntry = exists(ConstantTable, yytext, scope);
+												yylval.tbEntry->data_type = strdup("HEX");
 												columnNo += yyleng;
 			  									return T_HEX_CONSTANT;
 			  									}
 [+-]?{digit}+									{yylval.dval = atoi(yytext);
+												insert(ConstantTable, "T_INT_CONSTANT", yytext, (int)atoi(yytext), scope, yylineno, columnNo, columnNo+yyleng);
+												yylval.tbEntry = exists(ConstantTable, yytext, scope);
+												yylval.tbEntry->data_type = strdup("INT");
 												columnNo += yyleng;
 			  									return T_INT_CONSTANT;
 			  									}
 {dec}											{yylval.dval = atof(yytext);
+												insert(ConstantTable, "T_DEC_CONSTANT", yytext, atof(yytext), scope, yylineno, columnNo, columnNo+yyleng);
+												yylval.tbEntry = exists(ConstantTable, yytext, scope);
+												yylval.tbEntry->data_type = strdup("FLOAT");
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
-({digit}*)["."]?{digits}[eE][+-]?{digits}		{yylval.dval = atof(yytext);
+({digit}*)["."]?{digits}[eE][+-]?{digits}		{yylval.dval = atof(yytext);	
+												insert(ConstantTable, "T_DEC_CONSTANT", yytext, atof(yytext), scope, yylineno, columnNo, columnNo+yyleng);
+												yylval.tbEntry = exists(ConstantTable, yytext, scope);
+												yylval.tbEntry->data_type = strdup("FLOAT");
 												columnNo += yyleng;
 			  									return T_DEC_CONSTANT;
 			  									}
@@ -150,15 +161,25 @@ main		{ //printf("<keyword, %s>\n", yytext);
 						yyterminate();}
 \"[^\"\n]*\"			{
 						if(yytext[yyleng-2] == '\\'){yyless(yyleng-1);yymore();}
-						else{//insert(SymbolTable, "T_STRING", yytext, scope); 
-						columnNo += yyleng;
-						return T_STRING;
+						else
+						{
+							insert(ConstantTable, "T_STRING", yytext, yylval.dval, scope, yylineno, columnNo, columnNo+yyleng);
+							yylval.tbEntry = exists(ConstantTable, yytext, scope);
+							yylval.tbEntry->data_type = strdup("CHAR");
+							columnNo += yyleng;
+							return T_STRING;
 						}
+						}
+\'[^\'\n]\'             { insert(ConstantTable, "T_STRING", yytext, yylval.dval, scope, yylineno, columnNo, columnNo+yyleng);
+							yylval.tbEntry = exists(ConstantTable, yytext, scope);
+							yylval.tbEntry->data_type = strdup("CHAR");
+							columnNo += yyleng;
+							return T_STRING;
 						}
 {identifier}	{
 					if(strlen(yytext) <= 32)
 					{
-						insert(SymbolTable, "T_IDENTIFIER", yytext, scope, yylineno, columnNo, columnNo+yyleng);
+						insert(SymbolTable, "T_IDENTIFIER", yytext, INT_MAX, scope, yylineno, columnNo, columnNo+yyleng);
 						yylval.tbEntry = exists(SymbolTable, yytext, scope);
 						return T_IDENTIFIER;
 					}
