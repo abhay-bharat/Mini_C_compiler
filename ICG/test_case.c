@@ -2,14 +2,11 @@
 
 int main()
 {
-        int a = 10;
-        int b[10];
-        int i = 10;
-        int j;
-        while(i < 10)
-        {
-                printf("hi");
-                --i;             
-                        
-        }
+	int a;
+	int b = 0;
+	int c;
+	c = a * b + 2;
+	if(b > -1)
+		b = -2;
+	return 0;
 }
