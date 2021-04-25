@@ -102,7 +102,7 @@ varDecType  : varOnlyDec
             | varInit
             ;
 
-varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type); $$ = $1->data_type;}
+varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type); $$ = $1->data_type; insert($$, $1->lexem, NULL, NULL); printf("%s %s\n", $$, $1->lexem);}
             | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type); $$ = $1->data_type;}
             ;
 arrayDims : '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} arrayDims
@@ -331,6 +331,9 @@ int main(int argc, char* argv[])
         printf("\nParsing Failed\n");
     }
     fclose(yyin);
+
+    //display the intermediate code generated
+    display_ir(quad_ptr_head);
     return 0;
 }
 
@@ -369,4 +372,8 @@ void insert(char* op, char* a1, char* a2, char* result){
     }
     temp->next = node;
   }
+}
+
+void display_ir(ir_quad* head){
+  display_decl()
 }
