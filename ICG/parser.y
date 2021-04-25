@@ -197,7 +197,7 @@ assignmentOp : T_ADD_ASSIGN {push_ICG("+=");}
 expression : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}
                           push_ICG($1->lexem);
                           for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} 
-              assignmentOp expression {typeCheck($1,$4); $$; gencode(); $1->value = val_assign;}
+              assignmentOp expression { $$=$1; gencode(); $1->value = val_assign;}
            | incDecExpression {$$ = $1;}
            | logicalExpression {$$ = $1;}
            ;
@@ -270,8 +270,9 @@ stmtList : stmtList statement
 //               | T_IF '(' logicalExpression ')' {gencode_if();} statement {gencode_if_else();} T_ELSE statement
 //               ;
 
-selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} blockStmt else;
-else : {gencode_if_else();} T_ELSE statement
+selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} blockStmt else
+              ;
+else :  T_ELSE {gencode_if_else();} statement
      |
      ;
 
@@ -351,7 +352,6 @@ int checkScope(char* var, int scope){
   int var_node_exists = check_variable(SymbolTable, var);
   
   if(!var_node_exists){
-      //yyerror("Variable not declared");
       printf("\nLine : %d ERROR : Variable '%s' not declared\n", yylineno, var);
       return 0;
   }
