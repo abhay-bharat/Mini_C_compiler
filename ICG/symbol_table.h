@@ -10,6 +10,10 @@ struct node{
     int line_no;
     int column_st;
     int column_end;
+    int is_array;
+    int arr_dim;
+    int* arr_vals;
+    double value;
     struct node *next;
 };
 typedef struct node node_t;
@@ -19,15 +23,15 @@ struct symtab{
 };
 typedef struct symtab symtab_t;
 
-node_t* create_node(int sl_no, char *tok, char *lex, int scope, int line_no, int col_start, int col_end);
+node_t* create_node(int sl_no, char *tok, char *lex, double value, int scope, int line_no, int col_start, int col_end);
 void display_token(node_t *node);
 node_t* exists(symtab_t*, char*, int);
-void insert(symtab_t *table, char *tok_nam, char *lex, int scope, int line_no, int col_start, int col_end);
+void insert(symtab_t *table, char *tok_nam, char *lex, double value, int scope, int line_no, int col_start, int col_end);
 void Display(symtab_t *table);
 //Functions used in parser for semantic analysis
 int checkScope(char* var, int curr_scope);
 int check_variable(symtab_t* table, char* var);
-int typeCheck(char *type1, char *type2);
+int typeCheck(node_t* a, node_t* b);
 
 #if 0
 node_t* create_node(int sl_no, char *tok, char *lex){
