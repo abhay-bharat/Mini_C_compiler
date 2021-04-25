@@ -160,7 +160,7 @@ funcDec : funcOnlyDec ';'
         ;
 
 funcOnlyDec :   type funcName '(' params ')';
-funcName    : T_MAIN {gencode_function("main"); is_declaration = 0;}
+funcName    : T_MAIN {gencode_function("main"); is_declaration = 0;push_ICG("main");}
             | T_IDENTIFIER  {checkScope($1->lexem, scope); push_ICG($1->lexem);}
             ;
 funcDef : funcOnlyDec blockStmt {fprintf(ICG, "func end\n");};
@@ -224,8 +224,8 @@ notExpression : T_NOT {for(int i = 0; i < space; ++i)printf("\t"); ++space; prin
               ;
 relExpression :  sumExpression T_GREATER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("> \n"); } sumExpression {typeCheck($1, $4);$$ = $1;push_ICG(">"); gencode();}   
                 | sumExpression T_LESSER_THAN {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("< \n"); } sumExpression {typeCheck($1, $4);$$ = $1;push_ICG("<"); gencode();}   
-                | sumExpression T_LESSER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); } sumExpression {typeCheck($1, $4);$$ = $1;push_ICG(">="); gencode();}     
-                | sumExpression T_GREATER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;push_ICG("<="); gencode();}   
+                | sumExpression T_LESSER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); } sumExpression {typeCheck($1, $4);$$ = $1;push_ICG("<="); gencode();}     
+                | sumExpression T_GREATER_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;push_ICG(">="); gencode();}   
                 | sumExpression T_NOT_EQ {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("!= \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;push_ICG("!="); gencode();}       
                 | sumExpression T_EQUAL {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("== \n"); } sumExpression  {typeCheck($1, $4);$$ = $1;push_ICG("=="); gencode();}        
                 | sumExpression {$$ = $1;}
@@ -263,12 +263,18 @@ expressionStmt : expression ';' {ICG_top = 0;}
                ;
 blockStmt : '{' stmtList '}' 
           ;
-stmtList : statement stmtList
+stmtList : stmtList statement
          | 
          ;
-selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} statement %prec T_IFX
-              | T_IF '(' logicalExpression ')' statement {gencode_if_else();} T_ELSE statement
-              ;
+// selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} statement %prec T_IFX
+//               | T_IF '(' logicalExpression ')' {gencode_if();} statement {gencode_if_else();} T_ELSE statement
+//               ;
+
+selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} blockStmt else;
+else : {gencode_if_else();} T_ELSE statement
+     |
+     ;
+
 iterationStmt : T_WHILE '(' logicalExpression ')' {gencode_while(); is_loop = 1;} statement {gencode_while_block();is_loop = 0;};
 returnStmt : T_RETURN expressionStmt;
 breakStmt : T_BREAK ';' {
@@ -380,7 +386,6 @@ int main(int argc, char* argv[])
     {
         printf("\nParsing Failed\n");
     }
-    fprintf(ICG, "done");
     fclose(yyin);
     fclose(ICG);
     return 0;
@@ -408,6 +413,8 @@ void gencode()
   char *op = ICG_stack[--ICG_top];
   char *lhs = ICG_stack[--ICG_top];
 
+  //printf("lhs : %s op : %s rhs : %s\n", lhs, op, rhs);
+  
   node_t* lhs_node;
   node_t* rhs_node;
   node_t* op_node;
@@ -551,8 +558,7 @@ void gencode()
     else
       var2 = atof(op);
 
-    if(strcmp(rhs, "=") != 0)
-    {
+    
       fprintf(ICG, "%s = %s %s %s\n", temp_var, lhs, rhs, op);
       if(strcmp(rhs, "+") == 0)
         val_assign = var3 + var2;
@@ -562,13 +568,12 @@ void gencode()
         val_assign = var3 * var2;
       else if(strcmp(rhs, "/") == 0)
         val_assign = var3 / var2;
-    }
+    
 
     push_ICG(temp_var);
     push_value(val_assign);
   }
   inst_line_num++;
-  //fclose(ICG);
 }
 
 void gencode_unary()

@@ -33,7 +33,7 @@ node_t *exists(symtab_t *table, char *lex, int scope)
   node_t *temp = table->head;
   while (temp != NULL)
   {
-    if (strcmp(temp->lexem, lex) == 0 && temp->scope == scope) //need to handle this, because can have different scope in different section of program. This would only if used during declaration
+    if (strcmp(temp->lexem, lex) == 0 && temp->scope >= scope) //need to handle this, because can have different scope in different section of program. This would only if used during declaration
       return temp;
     temp = temp->next;
   }
