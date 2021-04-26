@@ -3,6 +3,12 @@
 // void foo(int, int);
 int main()
 {
+        int i = 5;
+        if(i < 10)
+        {
+        	i = 1;
+        }
+
 
 	// int a;
 	// int b = 0;
@@ -23,7 +29,5 @@ int main()
         // {
         //         --i;
         // }
-	int a;
-	int b;
-	a(a, b);
+
 }

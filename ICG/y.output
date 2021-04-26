@@ -208,7 +208,7 @@ Grammar
 
   121 $@21: %empty
 
-  122 else: $@21 T_ELSE statement
+  122 else: T_ELSE $@21 statement
   123     | %empty
 
   124 $@22: %empty
@@ -2434,11 +2434,11 @@ State 178
 
   120 selectionStmt: T_IF '(' logicalExpression ')' $@20 blockStmt . else
 
-    T_ELSE    reduce using rule 121 ($@21)
+    T_ELSE  shift, and go to state 180
+
     $default  reduce using rule 123 (else)
 
-    else  go to state 180
-    $@21  go to state 181
+    else  go to state 181
 
 
 State 179
@@ -2450,21 +2450,23 @@ State 179
 
 State 180
 
+  122 else: T_ELSE . $@21 statement
+
+    $default  reduce using rule 121 ($@21)
+
+    $@21  go to state 182
+
+
+State 181
+
   120 selectionStmt: T_IF '(' logicalExpression ')' $@20 blockStmt else .
 
     $default  reduce using rule 120 (selectionStmt)
 
 
-State 181
-
-  122 else: $@21 . T_ELSE statement
-
-    T_ELSE  shift, and go to state 182
-
-
 State 182
 
-  122 else: $@21 T_ELSE . statement
+  122 else: T_ELSE $@21 . statement
 
     T_ADD         shift, and go to state 45
     T_SUBTRACT    shift, and go to state 46
@@ -2515,6 +2517,6 @@ State 182
 
 State 183
 
-  122 else: $@21 T_ELSE statement .
+  122 else: T_ELSE $@21 statement .
 
     $default  reduce using rule 122 (else)

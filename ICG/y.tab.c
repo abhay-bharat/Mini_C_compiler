@@ -689,7 +689,7 @@ static const yytype_int16 yyrline[] =
      238,   238,   239,   239,   240,   240,   241,   243,   243,   244,
      244,   245,   247,   248,   249,   249,   251,   252,   253,   254,
      255,   256,   257,   258,   259,   261,   262,   264,   266,   267,
-     273,   273,   274,   274,   275,   278,   278,   279,   280,   289
+     273,   273,   275,   275,   276,   279,   279,   280,   281,   290
 };
 #endif
 
@@ -744,7 +744,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-123)
+#define YYTABLE_NINF (-56)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -771,7 +771,7 @@ static const yytype_int16 yypact[] =
       23,    23,    23,    23,    23,  -167,  -167,  -167,   103,    89,
     -167,    83,  -167,    36,    36,    18,    18,    18,    18,    18,
       18,  -167,  -167,  -167,   100,    52,  -167,  -167,   119,  -167,
-    -167,   150,    52,  -167
+    -167,  -167,    52,  -167
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -797,18 +797,18 @@ static const yytype_uint8 yydefact[] =
      104,   104,   104,   104,   104,    41,   120,   125,     0,   104,
       56,    64,    67,    86,    88,    73,    75,    77,    79,    81,
       83,    91,    93,    95,     0,   104,    38,    47,   124,   126,
-     121,     0,   104,   123
+     122,   121,   104,   123
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -167,  -167,   170,  -167,     6,  -167,   147,  -167,  -167,  -167,
+    -167,  -167,   162,  -167,     6,  -167,   146,  -167,  -167,  -167,
     -167,     2,   163,  -167,  -167,  -167,  -167,  -167,  -167,  -167,
     -167,    58,  -167,  -167,  -167,   -39,  -167,  -167,   -45,  -167,
       54,  -167,   -80,  -167,  -167,  -167,  -167,  -167,  -167,  -167,
     -167,    19,  -167,  -167,   -42,  -167,  -167,  -167,   -84,  -167,
-    -167,  -167,  -167,  -166,   142,   -13,  -167,  -167,  -167,  -167,
+    -167,  -167,  -167,  -166,   129,   -13,  -167,  -167,  -167,  -167,
     -167,  -167,  -167,  -167,  -167,  -167
 };
 
@@ -820,8 +820,8 @@ static const yytype_int16 yydefgoto[] =
       43,    44,   131,   132,   140,    62,   100,    63,    64,   142,
       65,   143,    66,    94,    67,   146,   147,   148,   149,   150,
      151,    68,   144,   145,    69,   152,   153,   154,    70,    87,
-      88,    71,    72,    73,    74,    75,    36,    76,   174,   180,
-     181,    77,   175,    78,    79,    80
+      88,    71,    72,    73,    74,    75,    36,    76,   174,   181,
+     182,    77,   175,    78,    79,    80
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -843,16 +843,16 @@ static const yytype_int16 yytable[] =
       89,    90,    57,    91,    28,    52,    92,    53,    54,    95,
      177,    96,   104,    52,    82,    53,    54,   105,   102,   103,
       57,   -46,    82,   123,    52,    56,    53,    54,    57,   159,
-    -122,   141,   158,    82,   -55,   -55,   -55,   -55,   -55,    57,
+     180,   141,   158,    82,   -55,   -55,   -55,   -55,   -55,    57,
      -55,   -55,   -55,   -55,   -55,   134,   135,   136,   137,   138,
      176,   178,    28,   106,   107,   165,   166,   167,   168,   169,
-     170,   182,     1,   108,   109,   110,   111,   112,   113,    16,
-      39,    30,   155,   -55,    97,    98,     2,     3,     4,   -55,
-      97,    98,     5,    93,   139,     6,   161,    99,   117,   118,
+     170,    16,     1,   108,   109,   110,   111,   112,   113,    39,
+      93,    30,   155,   -55,    97,    98,     2,     3,     4,   -55,
+      97,    98,     5,     0,   139,     6,   161,    99,   117,   118,
      119,   120,   121
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int16 yycheck[] =
 {
       13,    40,     0,    87,    88,     5,     0,     3,     4,   175,
        5,     9,     0,     5,    94,     9,   182,    43,    57,    57,
@@ -871,9 +871,9 @@ static const yytype_uint8 yycheck[] =
       21,    61,    61,    54,     7,     8,     9,    10,    11,    60,
        7,     8,     9,    10,    11,     7,     8,     9,    10,    11,
       57,   174,    62,     3,     4,   146,   147,   148,   149,   150,
-     151,    21,    19,    13,    14,    15,    16,    17,    18,     9,
-      33,    18,   124,    46,    47,    48,    33,    34,    35,    46,
-      47,    48,    39,    51,    46,    42,   142,    60,    49,    50,
+     151,     9,    19,    13,    14,    15,    16,    17,    18,    33,
+      51,    18,   124,    46,    47,    48,    33,    34,    35,    46,
+      47,    48,    39,    -1,    46,    42,   142,    60,    49,    50,
       51,    52,    53
 };
 
@@ -899,7 +899,7 @@ static const yytype_uint8 yystos[] =
      103,   104,   109,   110,   111,    85,    61,    61,    61,    55,
       89,    94,    96,   108,   108,   105,   105,   105,   105,   105,
      105,   112,   112,   112,   122,   126,    57,    89,   119,   117,
-     123,   124,    21,   117
+      21,   123,   124,   117
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
@@ -1815,7 +1815,7 @@ yyreduce:
 
   case 56:
 #line 200 "parser.y"
-                                      {typeCheck((yyvsp[-3].tbEntry),(yyvsp[0].tbEntry)); (yyval.tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
+                                      { (yyval.tbEntry)=(yyvsp[-3].tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
 #line 1820 "y.tab.c"
     break;
 
@@ -2132,25 +2132,25 @@ yyreduce:
     break;
 
   case 122:
-#line 274 "parser.y"
-       {gencode_if_else();}
+#line 275 "parser.y"
+               {gencode_if_else();}
 #line 2138 "y.tab.c"
     break;
 
   case 125:
-#line 278 "parser.y"
+#line 279 "parser.y"
                                                   {gencode_while(); is_loop = 1;}
 #line 2144 "y.tab.c"
     break;
 
   case 126:
-#line 278 "parser.y"
+#line 279 "parser.y"
                                                                                             {gencode_while_block();is_loop = 0;}
 #line 2150 "y.tab.c"
     break;
 
   case 128:
-#line 280 "parser.y"
+#line 281 "parser.y"
                         {
                           if(!is_loop)
                           {
@@ -2163,7 +2163,7 @@ yyreduce:
     break;
 
   case 129:
-#line 289 "parser.y"
+#line 290 "parser.y"
                           {
                             if(!is_loop)
                             {
@@ -2407,7 +2407,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 313 "parser.y"
+#line 314 "parser.y"
 
 
 
@@ -2449,7 +2449,6 @@ int checkScope(char* var, int scope){
   int var_node_exists = check_variable(SymbolTable, var);
   
   if(!var_node_exists){
-      //yyerror("Variable not declared");
       printf("\nLine : %d ERROR : Variable '%s' not declared\n", yylineno, var);
       return 0;
   }
