@@ -28,11 +28,15 @@
 
     //for goto label address(limit: 0 to 9)
     int goto_l = 1; 
-    char[3] label = "L0\0";
+    char label[3] = "L0\0";
 
     //for temparary variables(range: 0 to 9)
+    int num_args = 1;
     int temp_sl_no = 0;
-    char[3] temp = "t0\0"; 
+    char temp[3] = "t0\0"; 
+
+    //for display function feasibility 
+    //int op_code = 0;
 %}
 
 //data types of tokens
@@ -102,7 +106,7 @@ varDecType  : varOnlyDec
             | varInit
             ;
 
-varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type); $$ = $1->data_type; insert($$, $1->lexem, NULL, NULL); printf("%s %s\n", $$, $1->lexem);}
+varOnlyDec  : T_IDENTIFIER {$1->data_type = strdup(curr_data_type); $$ = $1->data_type; insert_ir(1, $$, $1->lexem, NULL, NULL);}
             | T_IDENTIFIER arrayDims {$1->data_type = strdup(curr_data_type); $$ = $1->data_type;}
             ;
 arrayDims : '[' T_INT_CONSTANT ']' { if($2 < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);}} arrayDims
@@ -135,11 +139,11 @@ funcDec : funcOnlyDec ';'
         ;
 
 funcOnlyDec :   type funcName '(' params ')';
-funcName    : T_MAIN
+funcName    : T_MAIN {insert_ir(2, "begin", "main", NULL, NULL);}
             | T_IDENTIFIER  {checkScope($1->lexem, scope);}
             ;
 funcDef : funcOnlyDec blockStmt ;
-funcCall : T_IDENTIFIER '(' args ')' ';'  {checkScope($1->lexem, scope);}
+funcCall : T_IDENTIFIER '(' args ')' ';'  {checkScope($1->lexem, scope); ++temp_sl_no; temp[1] = (temp_sl_no + '0'); char n_args[2] = "0\0"; n_args[1] = num_args + '0'; insert_ir(3, "call", n_args, $1->lexem, , temp); num_args = 1; }
          ;
 
 params : paramList
@@ -155,8 +159,8 @@ paramID : T_IDENTIFIER  {checkScope($1->lexem, scope);}
 args : argList
      |
      ;
-argList : argList ',' expression
-        | expression
+argList : {++num_args;} argList ',' expression
+        | expression 
         ;
 
 assignmentOp : T_ADD_ASSIGN 
@@ -171,7 +175,7 @@ assignmentOp : T_ADD_ASSIGN
 //                     ;
 expression : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}
                           for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} 
-              assignmentOp expression {!typeCheck($1->data_type,$4);$$ = $1->data_type;}
+              assignmentOp expression {!typeCheck($1 ,$4);$$ = $1->data_type;}
            | incDecExpression {$$ = $1;}
            | logicalExpression {$$ = $1;}
            ;
@@ -267,16 +271,16 @@ void display_symbolTable()
     Display(SymbolTable);
 }
 
-int typeCheck(char *type1, char *type2){
-	
+int typeCheck(node_t* a, node_t* b){
+  
   //printf("types: %s %s\n", a, b);
-	if(strcmp(type1,type2)!=0){
-		printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, type1, type2);
-		exit(0);
-	}
+  if(strcmp(a->data_type, b->data_type)!=0){
+    printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
+    exit(0);
+  }
 
-	else 
-		return 1;
+  else 
+    return 1;
 }
 
 int check_variable(symtab_t* table, char* var){
@@ -345,12 +349,17 @@ int yyerror(char* err)
 
 
 //Function definitions for the intermediate code generation
-ir_quad* create_node(char* op, char* a1, char* a2, char* result){
+ir_quad* create_node_ir(int op_code, char* op, char* a1, char* a2, char* result){
   ir_quad* node = (ir_quad*)malloc(sizeof(ir_quad));
-  node->op = op;
-  node->arg1 = a1;
-  node->arg2 = a2;
-  node->result = result;
+  node->op_code = op_code;
+  if(op != NULL)
+    strcpy(node->op ,op);
+  if(a1 != NULL)
+    strcpy(node->arg1, a1);
+  if(a2 != NULL)
+    strcpy(node->arg2, a2);
+  if(result != NULL)
+    strcpy(node->result, result);  
   node->next = NULL;
   
   return node;
@@ -360,8 +369,9 @@ ir_quad* create_node(char* op, char* a1, char* a2, char* result){
 //type based on the type of instruction, the fields of the quad node is allocated
 //then using this quad_table, appropriate kind of displays will be called generating the IR
  
-void insert(char* op, char* a1, char* a2, char* result){
-  ir_quad* node = create_node(op, a1, a2, result);
+void insert_ir(int op_code, char* op, char* a1, char* a2, char* result){
+  //printf("\n%s\n", a1);
+  ir_quad* node = create_node_ir(op_code, op, a1, a2, result); 
   if(quad_ptr_head == NULL){
     quad_ptr_head = node;
   }
@@ -374,6 +384,31 @@ void insert(char* op, char* a1, char* a2, char* result){
   }
 }
 
+void display_decl(ir_quad* node){
+  printf("%s  %s\n", node->op, node->arg1);
+}
+
+void display_call(ir_quad* node){
+  //first store in temporary the next node, so that the "param" can be displayed before the call
+  //function call not working properly while parsing
+  printf("%s = %s(%s, %s)\n", node->result, node->op, node->arg1, node->arg2);
+}
+
 void display_ir(ir_quad* head){
-  display_decl()
+  ir_quad* temp = head;
+  printf("\n----------------------------------------------------------------\n");
+  printf("\t\tIntermediate Code");
+  printf("\n----------------------------------------------------------------\n");
+  while(temp != NULL){
+    //printf("\n%d\n", temp->op_code);
+    switch(temp->op_code){
+      case 1 : display_decl(temp);
+               break;
+      case 2 : printf("begin main\n");
+               break;
+      case 3 : display_call(temp);
+               break;
+    }
+    temp = temp->next;
+  }
 }
