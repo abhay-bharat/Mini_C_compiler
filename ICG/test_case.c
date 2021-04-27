@@ -3,9 +3,13 @@
 int main()
 {
         int i = 5;
-        if(i < 10)
+        int j = 10;
+        while(i >= 0)
         {
-        	i = 1;
+                if(i < 0)
+                {
+                        ++i;
+                }
         }
 
 }

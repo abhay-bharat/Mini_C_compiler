@@ -184,11 +184,11 @@ argList : argList ',' expression
         | expression
         ;
 
-assignmentOp : T_ADD_ASSIGN {push_ICG("+=");}
-             | T_SUB_ASSIGN {push_ICG("-=");}
-             | T_MUL_ASSIGN {push_ICG("*=");}
-             | T_DIV_ASSIGN {push_ICG("/=");}
-             | T_MOD_ASSIGN {push_ICG("%=");}
+assignmentOp : T_ADD_ASSIGN {push_ICG("+="); for(int i = 0; i < space; ++i)printf("\t"); printf("+=\n"); ++space;}
+             | T_SUB_ASSIGN {push_ICG("-="); for(int i = 0; i < space; ++i)printf("\t"); printf("-=\n"); ++space;}
+             | T_MUL_ASSIGN {push_ICG("*="); for(int i = 0; i < space; ++i)printf("\t"); printf("*=\n"); ++space;}
+             | T_DIV_ASSIGN {push_ICG("/="); for(int i = 0; i < space; ++i)printf("\t"); printf("/=\n"); ++space;}
+             | T_MOD_ASSIGN {push_ICG("%="); for(int i = 0; i < space; ++i)printf("\t"); printf("%%=\n"); ++space;}
              | T_ASSIGN { push_ICG("="); for(int i = 0; i < space; ++i)printf("\t"); printf("=\n"); ++space; }
              ;
 // ternaryOpExpression : logicalExpression '?' expression ':' ternaryOpExpression
@@ -197,7 +197,7 @@ assignmentOp : T_ADD_ASSIGN {push_ICG("+=");}
 expression : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}
                           push_ICG($1->lexem);
                           for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} 
-              assignmentOp expression { $$=$1; gencode(); $1->value = val_assign;}
+              assignmentOp expression { typeCheck($1, $4); $$=$1; gencode(); $1->value = val_assign;}
            | incDecExpression {$$ = $1;}
            | logicalExpression {$$ = $1;}
            ;
@@ -231,7 +231,7 @@ relExpression :  sumExpression T_GREATER_THAN {for(int i = 0; i < space; ++i)pri
                 | sumExpression {$$ = $1;}
                 ;
 
-sumExpression : sumExpression T_ADD { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); } prodExpression  {typeCheck($1, $4);$$ = $1;push_ICG("+"); gencode();}
+sumExpression : sumExpression T_ADD { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); } prodExpression  {$$ = $1;typeCheck($1, $4);push_ICG("+"); gencode();}
               | sumExpression T_SUBTRACT {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("-\n"); } prodExpression  {typeCheck($1, $4);$$ = $1;push_ICG("-"); gencode();}
               | prodExpression  {$$ = $1;}
               ;
@@ -321,13 +321,13 @@ void display_symbolTable()
 
 int typeCheck(node_t* a, node_t* b){
 	
-  //printf("types: %s %s\n", a, b);
-	if(strcmp(a->data_type, b->data_type)!=0){
-		printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
-		exit(0);
-	}
+  //printf("types: %s %s\n", a->data_type, b->data_type);
+	// if(strcmp(a->data_type, b->data_type)!=0){
+	// 	printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
+	// 	exit(0);
+	// }
 
-	else 
+	// else 
 		return 1;
 }
 

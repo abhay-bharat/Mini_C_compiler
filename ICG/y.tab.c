@@ -1771,31 +1771,31 @@ yyreduce:
 
   case 49:
 #line 187 "parser.y"
-                            {push_ICG("+=");}
+                            {push_ICG("+="); for(int i = 0; i < space; ++i)printf("\t"); printf("+=\n"); ++space;}
 #line 1776 "y.tab.c"
     break;
 
   case 50:
 #line 188 "parser.y"
-                            {push_ICG("-=");}
+                            {push_ICG("-="); for(int i = 0; i < space; ++i)printf("\t"); printf("-=\n"); ++space;}
 #line 1782 "y.tab.c"
     break;
 
   case 51:
 #line 189 "parser.y"
-                            {push_ICG("*=");}
+                            {push_ICG("*="); for(int i = 0; i < space; ++i)printf("\t"); printf("*=\n"); ++space;}
 #line 1788 "y.tab.c"
     break;
 
   case 52:
 #line 190 "parser.y"
-                            {push_ICG("/=");}
+                            {push_ICG("/="); for(int i = 0; i < space; ++i)printf("\t"); printf("/=\n"); ++space;}
 #line 1794 "y.tab.c"
     break;
 
   case 53:
 #line 191 "parser.y"
-                            {push_ICG("%=");}
+                            {push_ICG("%="); for(int i = 0; i < space; ++i)printf("\t"); printf("%%=\n"); ++space;}
 #line 1800 "y.tab.c"
     break;
 
@@ -1815,7 +1815,7 @@ yyreduce:
 
   case 56:
 #line 200 "parser.y"
-                                      { (yyval.tbEntry)=(yyvsp[-3].tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
+                                      { typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry)); (yyval.tbEntry)=(yyvsp[-3].tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
 #line 1820 "y.tab.c"
     break;
 
@@ -1995,7 +1995,7 @@ yyreduce:
 
   case 86:
 #line 234 "parser.y"
-                                                                                                                            {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("+"); gencode();}
+                                                                                                                            {(yyval.tbEntry) = (yyvsp[-3].tbEntry);typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));push_ICG("+"); gencode();}
 #line 2000 "y.tab.c"
     break;
 
@@ -2418,13 +2418,13 @@ void display_symbolTable()
 
 int typeCheck(node_t* a, node_t* b){
 	
-  //printf("types: %s %s\n", a, b);
-	if(strcmp(a->data_type, b->data_type)!=0){
-		printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
-		exit(0);
-	}
+  //printf("types: %s %s\n", a->data_type, b->data_type);
+	// if(strcmp(a->data_type, b->data_type)!=0){
+	// 	printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
+	// 	exit(0);
+	// }
 
-	else 
+	// else 
 		return 1;
 }
 
