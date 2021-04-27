@@ -115,9 +115,10 @@
 
     void gencode();
     void gencode_unary();
-    void gencode_if();
-    void gencode_if_if();
-    void gencode_if_else();
+    void gencode_if_1();
+    void gencode_if_2();
+    void gencode_if_3();
+    void gencode_if_else_1();
     void gencode_while();
     void gencode_while_block();
     void gencode_array(char* data_type);
@@ -127,7 +128,7 @@
     int space = 0;
 
 
-#line 131 "y.tab.c"
+#line 132 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -289,14 +290,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 63 "parser.y"
+#line 64 "parser.y"
 
     int ival;
     char* str;
     node_t *tbEntry;
     double dval;
 
-#line 300 "y.tab.c"
+#line 301 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -677,19 +678,19 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   110,   110,   111,   113,   114,   116,   117,   119,   121,
-     122,   125,   126,   129,   130,   132,   135,   135,   138,   139,
-     140,   141,   142,   143,   144,   147,   148,   151,   152,   153,
-     154,   155,   158,   159,   162,   163,   164,   166,   167,   170,
-     171,   173,   174,   176,   177,   180,   181,   183,   184,   187,
-     188,   189,   190,   191,   192,   197,   197,   201,   202,   210,
-     211,   212,   213,   216,   216,   217,   219,   219,   220,   222,
-     222,   223,   225,   225,   226,   226,   227,   227,   228,   228,
-     229,   229,   230,   230,   231,   234,   234,   235,   235,   236,
-     238,   238,   239,   239,   240,   240,   241,   243,   243,   244,
-     244,   245,   247,   248,   249,   249,   251,   252,   253,   254,
-     255,   256,   257,   258,   259,   261,   262,   264,   266,   267,
-     273,   273,   275,   275,   276,   279,   279,   280,   281,   290
+       0,   111,   111,   112,   114,   115,   117,   118,   120,   122,
+     123,   126,   127,   130,   131,   133,   136,   136,   139,   140,
+     141,   142,   143,   144,   145,   148,   149,   152,   153,   154,
+     155,   156,   159,   160,   163,   164,   165,   167,   168,   171,
+     172,   174,   175,   177,   178,   181,   182,   184,   185,   188,
+     189,   190,   191,   192,   193,   198,   198,   202,   203,   211,
+     212,   213,   214,   217,   217,   218,   220,   220,   221,   223,
+     223,   224,   226,   226,   227,   227,   228,   228,   229,   229,
+     230,   230,   231,   231,   232,   235,   235,   236,   236,   237,
+     239,   239,   240,   240,   241,   241,   242,   244,   244,   245,
+     245,   246,   248,   249,   250,   250,   252,   253,   254,   255,
+     256,   257,   258,   259,   260,   262,   263,   265,   267,   268,
+     274,   274,   276,   276,   277,   280,   280,   281,   282,   291
 };
 #endif
 
@@ -1631,526 +1632,532 @@ yyreduce:
   switch (yyn)
     {
   case 6:
-#line 116 "parser.y"
+#line 117 "parser.y"
                          {is_declaration = 0;}
-#line 1637 "y.tab.c"
+#line 1638 "y.tab.c"
     break;
 
   case 13:
-#line 129 "parser.y"
+#line 130 "parser.y"
                            {(yyvsp[0].tbEntry)->data_type = strdup(curr_data_type); (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1643 "y.tab.c"
+#line 1644 "y.tab.c"
     break;
 
   case 14:
-#line 130 "parser.y"
+#line 131 "parser.y"
                                      {(yyvsp[-1].tbEntry)->data_type = strdup(curr_data_type); (yyval.tbEntry) = (yyvsp[-1].tbEntry); (yyvsp[-1].tbEntry)->arr_dim = (yyvsp[0].ival); push_ICG((yyvsp[-1].tbEntry)->lexem);}
-#line 1649 "y.tab.c"
+#line 1650 "y.tab.c"
     break;
 
   case 15:
-#line 132 "parser.y"
+#line 133 "parser.y"
                                   { if((yyvsp[-1].tbEntry)->value < 1){printf("\nLine : %d ERROR : Arrays can't have dimension lesser than 1\n\n", yylineno);} 
                                     (yyvsp[-1].tbEntry)->is_array = 1; (yyval.ival) = (int)((yyvsp[-1].tbEntry)->value);}
-#line 1656 "y.tab.c"
+#line 1657 "y.tab.c"
     break;
 
   case 16:
-#line 135 "parser.y"
+#line 136 "parser.y"
                                 {is_declaration = 0; push_ICG("=");}
-#line 1662 "y.tab.c"
+#line 1663 "y.tab.c"
     break;
 
   case 17:
-#line 136 "parser.y"
+#line 137 "parser.y"
                                   {gencode(); (yyvsp[-3].tbEntry)->value = val_assign; typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry)); is_declaration = 1;}
-#line 1668 "y.tab.c"
+#line 1669 "y.tab.c"
     break;
 
   case 19:
-#line 139 "parser.y"
+#line 140 "parser.y"
                 {curr_data_type = strdup("INT"); is_declaration = 1;}
-#line 1674 "y.tab.c"
+#line 1675 "y.tab.c"
     break;
 
   case 20:
-#line 140 "parser.y"
+#line 141 "parser.y"
                   {curr_data_type = strdup("FLOAT"); is_declaration = 1;}
-#line 1680 "y.tab.c"
+#line 1681 "y.tab.c"
     break;
 
   case 21:
-#line 141 "parser.y"
+#line 142 "parser.y"
                    {curr_data_type = strdup("DOUBLE"); is_declaration = 1;}
-#line 1686 "y.tab.c"
+#line 1687 "y.tab.c"
     break;
 
   case 22:
-#line 142 "parser.y"
+#line 143 "parser.y"
                  {curr_data_type = strdup("CHAR"); is_declaration = 1;}
-#line 1692 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 23:
-#line 143 "parser.y"
+#line 144 "parser.y"
                  {curr_data_type = strdup("VOID"); is_declaration = 1;}
-#line 1698 "y.tab.c"
+#line 1699 "y.tab.c"
     break;
 
   case 24:
-#line 144 "parser.y"
+#line 145 "parser.y"
                  {curr_data_type = strdup("BOOL"); is_declaration = 1;}
-#line 1704 "y.tab.c"
+#line 1705 "y.tab.c"
     break;
 
   case 27:
-#line 151 "parser.y"
+#line 152 "parser.y"
                               {printf("%f \n", (yyvsp[0].tbEntry)->value);  (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1710 "y.tab.c"
+#line 1711 "y.tab.c"
     break;
 
   case 28:
-#line 152 "parser.y"
+#line 153 "parser.y"
                               {printf("%f \n", (yyvsp[0].tbEntry)->value); (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1716 "y.tab.c"
+#line 1717 "y.tab.c"
     break;
 
   case 29:
-#line 153 "parser.y"
+#line 154 "parser.y"
                               {printf("%d \n", (int)(yyvsp[0].tbEntry)->value); (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1722 "y.tab.c"
+#line 1723 "y.tab.c"
     break;
 
   case 30:
-#line 154 "parser.y"
+#line 155 "parser.y"
                               {printf("%f \n", (yyvsp[0].tbEntry)->value); (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1728 "y.tab.c"
+#line 1729 "y.tab.c"
     break;
 
   case 31:
-#line 155 "parser.y"
+#line 156 "parser.y"
                               {printf("%f \n", (yyvsp[0].tbEntry)->value); (yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1734 "y.tab.c"
+#line 1735 "y.tab.c"
     break;
 
   case 35:
-#line 163 "parser.y"
+#line 164 "parser.y"
                      {gencode_function("main"); is_declaration = 0;push_ICG("main");}
-#line 1740 "y.tab.c"
+#line 1741 "y.tab.c"
     break;
 
   case 36:
-#line 164 "parser.y"
+#line 165 "parser.y"
                             {checkScope((yyvsp[0].tbEntry)->lexem, scope); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1746 "y.tab.c"
+#line 1747 "y.tab.c"
     break;
 
   case 37:
-#line 166 "parser.y"
+#line 167 "parser.y"
                                 {fprintf(ICG, "func end\n");}
-#line 1752 "y.tab.c"
+#line 1753 "y.tab.c"
     break;
 
   case 38:
-#line 167 "parser.y"
+#line 168 "parser.y"
                                           {checkScope((yyvsp[-4].tbEntry)->lexem, scope); push_ICG((yyvsp[-4].tbEntry)->lexem);}
-#line 1758 "y.tab.c"
+#line 1759 "y.tab.c"
     break;
 
   case 43:
-#line 176 "parser.y"
+#line 177 "parser.y"
                         {checkScope((yyvsp[0].tbEntry)->lexem, scope); push_ICG((yyvsp[0].tbEntry)->lexem);}
-#line 1764 "y.tab.c"
+#line 1765 "y.tab.c"
     break;
 
   case 44:
-#line 177 "parser.y"
+#line 178 "parser.y"
                                {checkScope((yyvsp[-2].tbEntry)->lexem, scope); push_ICG((yyvsp[-2].tbEntry)->lexem);}
-#line 1770 "y.tab.c"
+#line 1771 "y.tab.c"
     break;
 
   case 49:
-#line 187 "parser.y"
-                            {push_ICG("+=");}
-#line 1776 "y.tab.c"
+#line 188 "parser.y"
+                            {push_ICG("+="); for(int i = 0; i < space; ++i)printf("\t"); printf("+=\n"); ++space;}
+#line 1777 "y.tab.c"
     break;
 
   case 50:
-#line 188 "parser.y"
-                            {push_ICG("-=");}
-#line 1782 "y.tab.c"
+#line 189 "parser.y"
+                            {push_ICG("-="); for(int i = 0; i < space; ++i)printf("\t"); printf("-=\n"); ++space;}
+#line 1783 "y.tab.c"
     break;
 
   case 51:
-#line 189 "parser.y"
-                            {push_ICG("*=");}
-#line 1788 "y.tab.c"
+#line 190 "parser.y"
+                            {push_ICG("*="); for(int i = 0; i < space; ++i)printf("\t"); printf("*=\n"); ++space;}
+#line 1789 "y.tab.c"
     break;
 
   case 52:
-#line 190 "parser.y"
-                            {push_ICG("/=");}
-#line 1794 "y.tab.c"
+#line 191 "parser.y"
+                            {push_ICG("/="); for(int i = 0; i < space; ++i)printf("\t"); printf("/=\n"); ++space;}
+#line 1795 "y.tab.c"
     break;
 
   case 53:
-#line 191 "parser.y"
-                            {push_ICG("%=");}
-#line 1800 "y.tab.c"
+#line 192 "parser.y"
+                            {push_ICG("%="); for(int i = 0; i < space; ++i)printf("\t"); printf("%%=\n"); ++space;}
+#line 1801 "y.tab.c"
     break;
 
   case 54:
-#line 192 "parser.y"
+#line 193 "parser.y"
                         { push_ICG("="); for(int i = 0; i < space; ++i)printf("\t"); printf("=\n"); ++space; }
-#line 1806 "y.tab.c"
+#line 1807 "y.tab.c"
     break;
 
   case 55:
-#line 197 "parser.y"
+#line 198 "parser.y"
                           {if(checkScope((yyvsp[0].tbEntry)->lexem, scope) == 0){return -1;}
                           push_ICG((yyvsp[0].tbEntry)->lexem);
                           for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", (yyvsp[0].tbEntry)->lexem);}
-#line 1814 "y.tab.c"
+#line 1815 "y.tab.c"
     break;
 
   case 56:
-#line 200 "parser.y"
-                                      { (yyval.tbEntry)=(yyvsp[-3].tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
-#line 1820 "y.tab.c"
+#line 201 "parser.y"
+                                      { typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry)); (yyval.tbEntry)=(yyvsp[-3].tbEntry); gencode(); (yyvsp[-3].tbEntry)->value = val_assign;}
+#line 1821 "y.tab.c"
     break;
 
   case 57:
-#line 201 "parser.y"
+#line 202 "parser.y"
                               {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1826 "y.tab.c"
+#line 1827 "y.tab.c"
     break;
 
   case 58:
-#line 202 "parser.y"
+#line 203 "parser.y"
                                {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1832 "y.tab.c"
+#line 1833 "y.tab.c"
     break;
 
   case 59:
-#line 210 "parser.y"
+#line 211 "parser.y"
                                             {checkScope((yyvsp[0].tbEntry)->lexem, scope); push_ICG((yyvsp[0].tbEntry)->lexem); (yyval.tbEntry) = (yyvsp[0].tbEntry); (yyvsp[0].tbEntry)->value = (yyvsp[0].tbEntry)->value + 1; fprintf(ICG, "%s = %s + 1\n", (yyvsp[0].tbEntry)->lexem, (yyvsp[0].tbEntry)->lexem);}
-#line 1838 "y.tab.c"
+#line 1839 "y.tab.c"
     break;
 
   case 60:
-#line 211 "parser.y"
+#line 212 "parser.y"
                                             {checkScope((yyvsp[-1].tbEntry)->lexem, scope); push_ICG((yyvsp[-1].tbEntry)->lexem); (yyval.tbEntry) = (yyvsp[-1].tbEntry); (yyvsp[-1].tbEntry)->value = (yyvsp[-1].tbEntry)->value + 1; fprintf(ICG, "%s = %s + 1\n", (yyvsp[-1].tbEntry)->lexem, (yyvsp[-1].tbEntry)->lexem);}
-#line 1844 "y.tab.c"
+#line 1845 "y.tab.c"
     break;
 
   case 61:
-#line 212 "parser.y"
+#line 213 "parser.y"
                                             {checkScope((yyvsp[0].tbEntry)->lexem, scope); push_ICG((yyvsp[0].tbEntry)->lexem); (yyval.tbEntry) = (yyvsp[0].tbEntry); (yyvsp[0].tbEntry)->value = (yyvsp[0].tbEntry)->value - 1; fprintf(ICG, "%s = %s - 1\n", (yyvsp[0].tbEntry)->lexem, (yyvsp[0].tbEntry)->lexem);}
-#line 1850 "y.tab.c"
+#line 1851 "y.tab.c"
     break;
 
   case 62:
-#line 213 "parser.y"
+#line 214 "parser.y"
                                             {checkScope((yyvsp[-1].tbEntry)->lexem, scope); push_ICG((yyvsp[-1].tbEntry)->lexem); (yyval.tbEntry) = (yyvsp[-1].tbEntry); (yyvsp[-1].tbEntry)->value = (yyvsp[-1].tbEntry)->value - 1; fprintf(ICG, "%s = %s + 1\n", (yyvsp[-1].tbEntry)->lexem, (yyvsp[-1].tbEntry)->lexem);}
-#line 1856 "y.tab.c"
+#line 1857 "y.tab.c"
     break;
 
   case 63:
-#line 216 "parser.y"
+#line 217 "parser.y"
                                               {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("|| \n"); }
-#line 1862 "y.tab.c"
+#line 1863 "y.tab.c"
     break;
 
   case 64:
-#line 216 "parser.y"
+#line 217 "parser.y"
                                                                                                                                      {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("||"); gencode();}
-#line 1868 "y.tab.c"
+#line 1869 "y.tab.c"
     break;
 
   case 65:
-#line 217 "parser.y"
+#line 218 "parser.y"
                                    {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1874 "y.tab.c"
+#line 1875 "y.tab.c"
     break;
 
   case 66:
-#line 219 "parser.y"
+#line 220 "parser.y"
                                        {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("&& \n"); }
-#line 1880 "y.tab.c"
+#line 1881 "y.tab.c"
     break;
 
   case 67:
-#line 219 "parser.y"
+#line 220 "parser.y"
                                                                                                                                {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("&&"); gencode();}
-#line 1886 "y.tab.c"
+#line 1887 "y.tab.c"
     break;
 
   case 68:
-#line 220 "parser.y"
+#line 221 "parser.y"
                               {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1892 "y.tab.c"
+#line 1893 "y.tab.c"
     break;
 
   case 69:
-#line 222 "parser.y"
+#line 223 "parser.y"
                       {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("^ \n"); }
-#line 1898 "y.tab.c"
+#line 1899 "y.tab.c"
     break;
 
   case 70:
-#line 222 "parser.y"
+#line 223 "parser.y"
                                                                                                              {(yyval.tbEntry) = (yyvsp[0].tbEntry);push_ICG("!");}
-#line 1904 "y.tab.c"
+#line 1905 "y.tab.c"
     break;
 
   case 71:
-#line 223 "parser.y"
+#line 224 "parser.y"
                                {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1910 "y.tab.c"
+#line 1911 "y.tab.c"
     break;
 
   case 72:
-#line 225 "parser.y"
+#line 226 "parser.y"
                                               {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("> \n"); }
-#line 1916 "y.tab.c"
+#line 1917 "y.tab.c"
     break;
 
   case 73:
-#line 225 "parser.y"
+#line 226 "parser.y"
                                                                                                                                     {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG(">"); gencode();}
-#line 1922 "y.tab.c"
+#line 1923 "y.tab.c"
     break;
 
   case 74:
-#line 226 "parser.y"
+#line 227 "parser.y"
                                               {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("< \n"); }
-#line 1928 "y.tab.c"
+#line 1929 "y.tab.c"
     break;
 
   case 75:
-#line 226 "parser.y"
+#line 227 "parser.y"
                                                                                                                                     {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("<"); gencode();}
-#line 1934 "y.tab.c"
+#line 1935 "y.tab.c"
     break;
 
   case 76:
-#line 227 "parser.y"
+#line 228 "parser.y"
                                             {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("<= \n"); }
-#line 1940 "y.tab.c"
+#line 1941 "y.tab.c"
     break;
 
   case 77:
-#line 227 "parser.y"
+#line 228 "parser.y"
                                                                                                                                    {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("<="); gencode();}
-#line 1946 "y.tab.c"
+#line 1947 "y.tab.c"
     break;
 
   case 78:
-#line 228 "parser.y"
+#line 229 "parser.y"
                                              {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf(">= \n"); }
-#line 1952 "y.tab.c"
+#line 1953 "y.tab.c"
     break;
 
   case 79:
-#line 228 "parser.y"
+#line 229 "parser.y"
                                                                                                                                      {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG(">="); gencode();}
-#line 1958 "y.tab.c"
+#line 1959 "y.tab.c"
     break;
 
   case 80:
-#line 229 "parser.y"
+#line 230 "parser.y"
                                          {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("!= \n"); }
-#line 1964 "y.tab.c"
+#line 1965 "y.tab.c"
     break;
 
   case 81:
-#line 229 "parser.y"
+#line 230 "parser.y"
                                                                                                                                  {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("!="); gencode();}
-#line 1970 "y.tab.c"
+#line 1971 "y.tab.c"
     break;
 
   case 82:
-#line 230 "parser.y"
+#line 231 "parser.y"
                                         {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("== \n"); }
-#line 1976 "y.tab.c"
+#line 1977 "y.tab.c"
     break;
 
   case 83:
-#line 230 "parser.y"
+#line 231 "parser.y"
                                                                                                                                 {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("=="); gencode();}
-#line 1982 "y.tab.c"
+#line 1983 "y.tab.c"
     break;
 
   case 84:
-#line 231 "parser.y"
+#line 232 "parser.y"
                                 {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 1988 "y.tab.c"
+#line 1989 "y.tab.c"
     break;
 
   case 85:
-#line 234 "parser.y"
+#line 235 "parser.y"
                                     { for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+\n"); }
-#line 1994 "y.tab.c"
+#line 1995 "y.tab.c"
     break;
 
   case 86:
-#line 234 "parser.y"
-                                                                                                                            {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("+"); gencode();}
-#line 2000 "y.tab.c"
+#line 235 "parser.y"
+                                                                                                                            {(yyval.tbEntry) = (yyvsp[-3].tbEntry);typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));push_ICG("+"); gencode();}
+#line 2001 "y.tab.c"
     break;
 
   case 87:
-#line 235 "parser.y"
+#line 236 "parser.y"
                                          {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("-\n"); }
-#line 2006 "y.tab.c"
+#line 2007 "y.tab.c"
     break;
 
   case 88:
-#line 235 "parser.y"
+#line 236 "parser.y"
                                                                                                                                 {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("-"); gencode();}
-#line 2012 "y.tab.c"
+#line 2013 "y.tab.c"
     break;
 
   case 89:
-#line 236 "parser.y"
+#line 237 "parser.y"
                                 {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 2018 "y.tab.c"
+#line 2019 "y.tab.c"
     break;
 
   case 90:
-#line 238 "parser.y"
+#line 239 "parser.y"
                                            {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("*\n"); }
-#line 2024 "y.tab.c"
+#line 2025 "y.tab.c"
     break;
 
   case 91:
-#line 238 "parser.y"
+#line 239 "parser.y"
                                                                                                                                    {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("*"); gencode();}
-#line 2030 "y.tab.c"
+#line 2031 "y.tab.c"
     break;
 
   case 92:
-#line 239 "parser.y"
+#line 240 "parser.y"
                                          {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("/\n"); }
-#line 2036 "y.tab.c"
+#line 2037 "y.tab.c"
     break;
 
   case 93:
-#line 239 "parser.y"
+#line 240 "parser.y"
                                                                                                                                  {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("/"); gencode();}
-#line 2042 "y.tab.c"
+#line 2043 "y.tab.c"
     break;
 
   case 94:
-#line 240 "parser.y"
+#line 241 "parser.y"
                                       {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("/\n"); }
-#line 2048 "y.tab.c"
+#line 2049 "y.tab.c"
     break;
 
   case 95:
-#line 240 "parser.y"
+#line 241 "parser.y"
                                                                                                                              {typeCheck((yyvsp[-3].tbEntry), (yyvsp[0].tbEntry));(yyval.tbEntry) = (yyvsp[-3].tbEntry);push_ICG("%"); gencode();}
-#line 2054 "y.tab.c"
+#line 2055 "y.tab.c"
     break;
 
   case 96:
-#line 241 "parser.y"
+#line 242 "parser.y"
                                  {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 2060 "y.tab.c"
+#line 2061 "y.tab.c"
     break;
 
   case 97:
-#line 243 "parser.y"
+#line 244 "parser.y"
                         {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("+ \n");}
-#line 2066 "y.tab.c"
+#line 2067 "y.tab.c"
     break;
 
   case 98:
-#line 243 "parser.y"
+#line 244 "parser.y"
                                                                                                                 {(yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG("+"); gencode_unary();}
-#line 2072 "y.tab.c"
+#line 2073 "y.tab.c"
     break;
 
   case 99:
-#line 244 "parser.y"
+#line 245 "parser.y"
                              {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("- \n");}
-#line 2078 "y.tab.c"
+#line 2079 "y.tab.c"
     break;
 
   case 100:
-#line 244 "parser.y"
+#line 245 "parser.y"
                                                                                                                       {(yyval.tbEntry) = (yyvsp[0].tbEntry); push_ICG("-"); gencode_unary();}
-#line 2084 "y.tab.c"
+#line 2085 "y.tab.c"
     break;
 
   case 101:
-#line 245 "parser.y"
+#line 246 "parser.y"
                           {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 2090 "y.tab.c"
+#line 2091 "y.tab.c"
     break;
 
   case 102:
-#line 247 "parser.y"
+#line 248 "parser.y"
                        {if(checkScope((yyvsp[0].tbEntry)->lexem, scope) == 0){return -1;} push_ICG((yyvsp[0].tbEntry)->lexem); for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", (yyvsp[0].tbEntry)->lexem); (yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 2096 "y.tab.c"
+#line 2097 "y.tab.c"
     break;
 
   case 103:
-#line 248 "parser.y"
+#line 249 "parser.y"
                               {(yyval.tbEntry) = (yyvsp[-1].tbEntry);}
-#line 2102 "y.tab.c"
+#line 2103 "y.tab.c"
     break;
 
   case 104:
-#line 249 "parser.y"
+#line 250 "parser.y"
           {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tconstant = "); }
-#line 2108 "y.tab.c"
+#line 2109 "y.tab.c"
     break;
 
   case 105:
-#line 249 "parser.y"
+#line 250 "parser.y"
                                                                                                       {(yyval.tbEntry) = (yyvsp[0].tbEntry);}
-#line 2114 "y.tab.c"
+#line 2115 "y.tab.c"
     break;
 
   case 115:
-#line 261 "parser.y"
+#line 262 "parser.y"
                                 {ICG_top = 0;}
-#line 2120 "y.tab.c"
+#line 2121 "y.tab.c"
     break;
 
   case 116:
-#line 262 "parser.y"
+#line 263 "parser.y"
                      {ICG_top = 0;}
-#line 2126 "y.tab.c"
+#line 2127 "y.tab.c"
     break;
 
   case 120:
-#line 273 "parser.y"
-                                               {gencode_if();}
-#line 2132 "y.tab.c"
+#line 274 "parser.y"
+                                               {gencode_if_1();}
+#line 2133 "y.tab.c"
+    break;
+
+  case 121:
+#line 274 "parser.y"
+                                                                                {gencode_if_3();}
+#line 2139 "y.tab.c"
     break;
 
   case 122:
-#line 275 "parser.y"
-               {gencode_if_else();}
-#line 2138 "y.tab.c"
+#line 276 "parser.y"
+               {gencode_if_else_1();}
+#line 2145 "y.tab.c"
     break;
 
   case 125:
-#line 279 "parser.y"
+#line 280 "parser.y"
                                                   {gencode_while(); is_loop = 1;}
-#line 2144 "y.tab.c"
+#line 2151 "y.tab.c"
     break;
 
   case 126:
-#line 279 "parser.y"
+#line 280 "parser.y"
                                                                                             {gencode_while_block();is_loop = 0;}
-#line 2150 "y.tab.c"
+#line 2157 "y.tab.c"
     break;
 
   case 128:
-#line 281 "parser.y"
+#line 282 "parser.y"
                         {
                           if(!is_loop)
                           {
@@ -2159,11 +2166,11 @@ yyreduce:
                           }
                           fprintf(ICG, "goto L%d\n", loop_constants[0]);
                         }
-#line 2163 "y.tab.c"
+#line 2170 "y.tab.c"
     break;
 
   case 129:
-#line 290 "parser.y"
+#line 291 "parser.y"
                           {
                             if(!is_loop)
                             {
@@ -2171,11 +2178,11 @@ yyreduce:
                             }
                             fprintf(ICG, "goto L%d\n", loop_constants[1]);
                           }
-#line 2175 "y.tab.c"
+#line 2182 "y.tab.c"
     break;
 
 
-#line 2179 "y.tab.c"
+#line 2186 "y.tab.c"
 
       default: break;
     }
@@ -2407,7 +2414,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 314 "parser.y"
+#line 315 "parser.y"
 
 
 
@@ -2418,13 +2425,13 @@ void display_symbolTable()
 
 int typeCheck(node_t* a, node_t* b){
 	
-  //printf("types: %s %s\n", a, b);
-	if(strcmp(a->data_type, b->data_type)!=0){
-		printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
-		exit(0);
-	}
+  //printf("types: %s %s\n", a->data_type, b->data_type);
+	// if(strcmp(a->data_type, b->data_type)!=0){
+	// 	printf("\nLine : %d Type Mismatch: Performing operation on types %s and %s\n", yylineno, a->data_type, b->data_type);
+	// 	exit(0);
+	// }
 
-	else 
+	// else 
 		return 1;
 }
 
@@ -2689,14 +2696,14 @@ void gencode_unary()
   ++inst_line_num;
 }
 
-void gencode_if()
+void gencode_if_1()
 {
   label_stack[label_top++] = ++dec_label;
   fprintf(ICG, "if %s goto L%d\n", ICG_stack[--ICG_top], dec_label);
-  gencode_if_if();
+  gencode_if_2();
 }
 
-void gencode_if_if()
+void gencode_if_2()
 {
   ++dec_label;
   fprintf(ICG, "goto L%d\n", dec_label);
@@ -2704,9 +2711,19 @@ void gencode_if_if()
   label_stack[label_top++] = dec_label;
 }
 
-void gencode_if_else()
+void gencode_if_3()
 {
-  fprintf(ICG,"L%d :\n",label_stack[--label_top]);
+  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+}
+
+void gencode_if_else_1()
+{
+  ++dec_label;
+  fprintf(ICG, "goto L%d\n", dec_label);
+  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+  label_stack[label_top++] = dec_label;
+
+  //fprintf(ICG,"L%d :\n",label_stack[--label_top]);
 }
 
 void gencode_while()
