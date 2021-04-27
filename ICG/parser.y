@@ -46,9 +46,10 @@
 
     void gencode();
     void gencode_unary();
-    void gencode_if();
-    void gencode_if_if();
-    void gencode_if_else();
+    void gencode_if_1();
+    void gencode_if_2();
+    void gencode_if_3();
+    void gencode_if_else_1();
     void gencode_while();
     void gencode_while_block();
     void gencode_array(char* data_type);
@@ -270,9 +271,9 @@ stmtList : stmtList statement
 //               | T_IF '(' logicalExpression ')' {gencode_if();} statement {gencode_if_else();} T_ELSE statement
 //               ;
 
-selectionStmt : T_IF '(' logicalExpression ')' {gencode_if();} blockStmt else
+selectionStmt : T_IF '(' logicalExpression ')' {gencode_if_1();} blockStmt else {gencode_if_3();}
               ;
-else :  T_ELSE {gencode_if_else();} statement
+else :  T_ELSE {gencode_if_else_1();} statement
      |
      ;
 
@@ -592,14 +593,14 @@ void gencode_unary()
   ++inst_line_num;
 }
 
-void gencode_if()
+void gencode_if_1()
 {
   label_stack[label_top++] = ++dec_label;
   fprintf(ICG, "if %s goto L%d\n", ICG_stack[--ICG_top], dec_label);
-  gencode_if_if();
+  gencode_if_2();
 }
 
-void gencode_if_if()
+void gencode_if_2()
 {
   ++dec_label;
   fprintf(ICG, "goto L%d\n", dec_label);
@@ -607,9 +608,19 @@ void gencode_if_if()
   label_stack[label_top++] = dec_label;
 }
 
-void gencode_if_else()
+void gencode_if_3()
 {
-  fprintf(ICG,"L%d :\n",label_stack[--label_top]);
+  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+}
+
+void gencode_if_else_1()
+{
+  ++dec_label;
+  fprintf(ICG, "goto L%d\n", dec_label);
+  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+  label_stack[label_top++] = dec_label;
+
+  //fprintf(ICG,"L%d :\n",label_stack[--label_top]);
 }
 
 void gencode_while()

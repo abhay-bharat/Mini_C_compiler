@@ -1,16 +1,20 @@
 func begin main
 i = 5
 j = 10
-t0 = i >= 0
+t0 = i == 5
+if t0 goto L1
+goto L2
 L1 :
-if t0 goto L2
-goto L3
-L2 :
-t1 = i < 0
-if t1 goto L4
+t1 = i > 0
+if t1 goto L3
+goto L4
+L3 :
+i = i + 1
 goto L5
 L4 :
-i = i + 1
-goto L3
+i = i - 1
 L5 :
+i = i + j
+L2 :
+j = j + 1
 func end
