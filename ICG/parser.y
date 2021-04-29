@@ -6,12 +6,14 @@
     #include<limits.h>
     #include<ctype.h>
     #include"symbol_table.h"
+    #include "quad_table.h"
 
 
     extern int scope, columnNo;
     //initialise symbol table
     symtab_t* SymbolTable = NULL;
     symtab_t* ConstantTable = NULL;
+    quad_head* Quad = NULL;
     int yyerror(char* err);
     int yylex(void);
     extern FILE* yyin;
@@ -41,7 +43,6 @@
 
     FILE *ICG;
 
-
     void push_ICG(char* text);
 
     void gencode();
@@ -54,6 +55,7 @@
     void gencode_while_block();
     void gencode_array(char* data_type);
     void gencode_function(char *lexeme);
+    char* create_label(int dec_label);
 
     //space variable to beautify the syntax tree output
     int space = 0;
@@ -208,10 +210,10 @@ expression : T_IDENTIFIER {if(checkScope($1->lexem, scope) == 0){return -1;}
 //                      | T_IDENTIFIER {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("\tid=%s\n", $1->lexem);} assignmentOp assignmentExpression {checkScope($1->lexem, scope);}
 //                      ;
 
-incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope); push_ICG($2->lexem); $$ = $2; $2->value = $2->value + 1; fprintf(ICG, "%s = %s + 1\n", $2->lexem, $2->lexem);}
-                 | T_IDENTIFIER T_INCREMENT {checkScope($1->lexem, scope); push_ICG($1->lexem); $$ = $1; $1->value = $1->value + 1; fprintf(ICG, "%s = %s + 1\n", $1->lexem, $1->lexem);}
-                 | T_DECREMENT T_IDENTIFIER {checkScope($2->lexem, scope); push_ICG($2->lexem); $$ = $2; $2->value = $2->value - 1; fprintf(ICG, "%s = %s - 1\n", $2->lexem, $2->lexem);}
-                 | T_IDENTIFIER T_DECREMENT {checkScope($1->lexem, scope); push_ICG($1->lexem); $$ = $1; $1->value = $1->value - 1; fprintf(ICG, "%s = %s + 1\n", $1->lexem, $1->lexem);}
+incDecExpression : T_INCREMENT T_IDENTIFIER {checkScope($2->lexem, scope); push_ICG($2->lexem); $$ = $2; $2->value = $2->value + 1; fprintf(ICG, "%s = %s + 1\n", $2->lexem, $2->lexem);insert_ir(Quad, "+", $2->lexem, "1", $2->lexem);}
+                 | T_IDENTIFIER T_INCREMENT {checkScope($1->lexem, scope); push_ICG($1->lexem); $$ = $1; $1->value = $1->value + 1; fprintf(ICG, "%s = %s + 1\n", $1->lexem, $1->lexem);insert_ir(Quad, "+", $1->lexem, "1", $1->lexem);}
+                 | T_DECREMENT T_IDENTIFIER {checkScope($2->lexem, scope); push_ICG($2->lexem); $$ = $2; $2->value = $2->value - 1; fprintf(ICG, "%s = %s - 1\n", $2->lexem, $2->lexem);insert_ir(Quad, "-", $2->lexem, "1", $2->lexem);}
+                 | T_IDENTIFIER T_DECREMENT {checkScope($1->lexem, scope); push_ICG($1->lexem); $$ = $1; $1->value = $1->value - 1; fprintf(ICG, "%s = %s + 1\n", $1->lexem, $1->lexem);insert_ir(Quad, "-", $1->lexem, "1", $1->lexem);}
                  ;
 
 logicalExpression : logicalExpression T_LG_OR {for(int i = 0; i < space; ++i)printf("\t"); ++space; printf("|| \n"); } andExpression {typeCheck($1, $4);$$ = $1;push_ICG("||"); gencode();}
@@ -286,6 +288,8 @@ breakStmt : T_BREAK ';' {
                             return(-1);
                           }
                           fprintf(ICG, "goto L%d\n", loop_constants[0]);
+                          char* label = create_label(loop_constants[0]);
+                          insert_ir(Quad, "goto", NULL, NULL, label);
                         }
                         ;
 contStmt : T_CONTINUE ';' {
@@ -294,6 +298,8 @@ contStmt : T_CONTINUE ';' {
                               printf("Line : %d ERROR : continue outside loop\n", yylineno);
                             }
                             fprintf(ICG, "goto L%d\n", loop_constants[1]);
+                            char* label = create_label(loop_constants[1]);
+                          insert_ir(Quad, "goto", NULL, NULL, label);
                           }
                           ;
 
@@ -371,8 +377,10 @@ int main(int argc, char* argv[])
 {
     SymbolTable = (symtab_t*)malloc(sizeof(symtab_t));
     ConstantTable = (symtab_t*)malloc(sizeof(symtab_t));
+    Quad = (quad_head*)malloc(sizeof(quad_head));
     SymbolTable->head = NULL;
     ConstantTable->head = NULL;
+    Quad->head = NULL;
 
     yyin = fopen(argv[1], "r");
 
@@ -389,6 +397,7 @@ int main(int argc, char* argv[])
     }
     fclose(yyin);
     fclose(ICG);
+    display_ir(Quad);
     return 0;
 }
 
@@ -423,6 +432,7 @@ void gencode()
   if(strcmp(op, "=") == 0)
   {
     fprintf(ICG, "%s = %s\n", lhs, rhs);
+    insert_ir(Quad, "=", rhs, NULL, lhs);
     if(isalpha(rhs[0]))
     {
       rhs_node = exists(SymbolTable, rhs, scope);
@@ -461,6 +471,7 @@ void gencode()
       val_assign = lhs_node -> value + atof(rhs);
     }
     fprintf(ICG,"%s = %s + %s\n",lhs, lhs, rhs);
+    insert_ir(Quad, "+", lhs, rhs, lhs);
   }
 
   else if (strcmp(op, "-=") == 0)
@@ -483,6 +494,7 @@ void gencode()
       val_assign = lhs_node -> value - atof(rhs);
     }
     fprintf(ICG,"%s = %s - %s\n",lhs, lhs, rhs);
+    insert_ir(Quad, "-", lhs, rhs, lhs);
   }
 
   else if (strcmp(op, "*=") == 0)
@@ -505,6 +517,7 @@ void gencode()
       val_assign = lhs_node -> value * atof(rhs);
     }
     fprintf(ICG,"%s = %s * %s\n",lhs, lhs, rhs);
+    insert_ir(Quad, "*", lhs, rhs, lhs);
   }
 
   else if (strcmp(op, "/=") == 0)
@@ -527,6 +540,7 @@ void gencode()
       val_assign = lhs_node -> value / atof(rhs);
     }
     fprintf(ICG,"%s = %s / %s\n",lhs, lhs, rhs);
+    insert_ir(Quad, "/", lhs, rhs, lhs);
   }
 
   else
@@ -561,6 +575,7 @@ void gencode()
 
     
       fprintf(ICG, "%s = %s %s %s\n", temp_var, lhs, rhs, op);
+      insert_ir(Quad, rhs, lhs, op, temp_var);
       if(strcmp(rhs, "+") == 0)
         val_assign = var3 + var2;
       else if(strcmp(rhs, "-") == 0)
@@ -589,14 +604,28 @@ void gencode_unary()
   ++temp_var_num;
 
   fprintf(ICG, "%s = %s %s\n", temp_var, op1, op2);
+  insert_ir(Quad, op2, op1, NULL, temp_var);
   push_ICG(temp_var);
   ++inst_line_num;
+}
+
+char* create_label(int dec_label)
+{
+  char* label = (char*)malloc(sizeof(char) * 20);
+  strcpy(label, "L");
+  char temp[20];
+  sprintf(temp, "%d", dec_label);
+  strcat(label, temp);
+  return label;
 }
 
 void gencode_if_1()
 {
   label_stack[label_top++] = ++dec_label;
-  fprintf(ICG, "if %s goto L%d\n", ICG_stack[--ICG_top], dec_label);
+  char* cond_var = ICG_stack[--ICG_top];
+  fprintf(ICG, "if %s goto L%d\n", cond_var, dec_label);
+  char* label = create_label(dec_label);
+  insert_ir(Quad, "if", cond_var, NULL, label);
   gencode_if_2();
 }
 
@@ -604,20 +633,33 @@ void gencode_if_2()
 {
   ++dec_label;
   fprintf(ICG, "goto L%d\n", dec_label);
-  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+  char* label = create_label(dec_label);
+  insert_ir(Quad, "goto", NULL, NULL, label);
+  int label_num = label_stack[--label_top];
+  fprintf(ICG, "L%d :\n", label_num);
+  char* label2 = create_label(label_num);
+  insert_ir(Quad, "Label", NULL, NULL, label2);
   label_stack[label_top++] = dec_label;
 }
 
 void gencode_if_3()
 {
-  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+  int label_num = label_stack[--label_top];
+  fprintf(ICG, "L%d :\n", label_num);
+  char* label = create_label(label_num);
+  insert_ir(Quad, "Label", NULL, NULL, label);
 }
 
 void gencode_if_else_1()
 {
   ++dec_label;
   fprintf(ICG, "goto L%d\n", dec_label);
-  fprintf(ICG, "L%d :\n", label_stack[--label_top]);
+  char* label = create_label(dec_label);
+  insert_ir(Quad, "goto", NULL, NULL, label);
+  int label_num = label_stack[--label_top];
+  fprintf(ICG, "L%d :\n", label_num);
+  char* label2 = create_label(label_num);
+  insert_ir(Quad, "Label", NULL, NULL, label2);
   label_stack[label_top++] = dec_label;
 
   //fprintf(ICG,"L%d :\n",label_stack[--label_top]);
@@ -626,15 +668,25 @@ void gencode_if_else_1()
 void gencode_while()
 {
   fprintf(ICG,"L%d :\n",++dec_label);
+  char* label = create_label(dec_label);
+  insert_ir(Quad, "Label", NULL, NULL, label);
   loop_constants[0] = dec_label;
   label_stack[label_top++] = dec_label;
   label_stack[label_top++] = ++dec_label;
-  fprintf(ICG,"if %s goto L%d\n",ICG_stack[--ICG_top], dec_label);
+  char* cond_var = ICG_stack[--ICG_top];
+  fprintf(ICG,"if %s goto L%d\n", cond_var, dec_label);
+  char* label2 = create_label(dec_label);
+  insert_ir(Quad, "if", cond_var, NULL, label2);
 
   ++dec_label;
   fprintf(ICG,"goto L%d\n",dec_label);
+  char* label3 = create_label(dec_label);
+  insert_ir(Quad, "goto", NULL, NULL, label3);
   loop_constants[1]= dec_label;
-  fprintf(ICG,"L%d :\n",label_stack[--label_top]);
+  int label_num = label_stack[--label_top];
+  fprintf(ICG,"L%d :\n", label_num);
+  char* label4 = create_label(label_num);
+  insert_ir(Quad, "Label", NULL, NULL, label4);
   label_stack[label_top++] = dec_label;
 }
 
@@ -644,6 +696,10 @@ void gencode_while_block()
     int label_true = label_stack[--label_top];
     fprintf(ICG,"goto L%d\n",label_true);
     fprintf(ICG,"L%d :\n",label_false);
+    char* label1 = create_label(label_true);
+    char* label2 = create_label(label_false);
+    insert_ir(Quad, "goto", NULL, NULL, label1);
+    insert_ir(Quad, "Label", NULL, NULL, label2);
 }
 
 void gencode_function(char *lexeme)
@@ -669,11 +725,17 @@ void gencode_array(char *data_type)
     
   strcat(op2,"[");
   if(strcmp(data_type,"INT") == 0 || strcmp(data_type,"FLOAT")==0)
+  {
     fprintf(ICG,"%s = 4 * %s\n",temp,op1);
+    char num[10];
+    sprintf(num, "%d", 4);
+    insert_ir(Quad, "*", num, op1, temp);
+  }
   strcat(op2,temp);
   strcat(op2,"]");
 
   fprintf(ICG,"%s = %s\n",temp1,op2);
+  insert_ir(Quad, "=", op2, NULL, temp1);
 
   push_ICG(temp1);
 }
