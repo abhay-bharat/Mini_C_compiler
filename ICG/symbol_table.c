@@ -73,8 +73,8 @@ void Display(symtab_t *table)
   printf("\n****************************************************************************\n");
   printf("\t\t\t SYMBOL TABLE \t\t\t");
   printf("\n****************************************************************************\n\n");
-  printf("|\tpointer\t|\ttoken_name\t|\tlexeme\t|   data_type   |\t Scope \t|   Line no.    | Column_start  |  Column_end   |\n\n");
-
+  printf("|\tpointer\t|\ttoken_name\t|\tlexeme\t|   data_type   |\t Scope \t|   Line no.    | Column_start  |  Column_end   |\n");
+  printf("-----------------------------------------------------------------------------------------------------------------------------------------\n");
   node_t *temp = table->head;
   node_t* prev = temp;
   while(temp != NULL){
