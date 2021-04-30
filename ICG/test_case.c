@@ -11,7 +11,7 @@ int main()
 	b = b*a;
 	/////////////////
 
-	//eg. for constant propagation
+	//eg. for constant propagation and constant folding
        //  int i = 5;
        //  int j = 10;
        // if(i == 5)
@@ -32,5 +32,9 @@ int main()
 	// a = a + b;
 	/////////////////////////////
 
+	//eg. for constant folding
+	// int a = 11;
+	// int b = a/2;
+	////////////////////////////
 }
 

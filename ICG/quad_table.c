@@ -158,22 +158,67 @@ void const_propagation(quad_head* quad){
   }
 }
 
-void deadcode_elimination(quad_head* quad){
-
+//performs the arithmetic operation
+double perform_arithmetic_op(ir_quad* node){
+    // printf("%s\n", node->arg1);
+    double a = atof(node->arg1);
+    double b = atof(node->arg2);
+    // printf("%f\n%f\n", a, b);
+    double res = 0;                 
+    // switch(node->op){
+    //     case "+" : res = a + b;
+    //                 break;
+    //     case "-" : res = a - b;
+    //                 break;
+    //     case "*" : res = a * b;
+    //                 break;
+    //     case "/" : res = a/b;
+    //                 break;
+    //     default : break; //default case included for the sanity of code
+    // }
+    if(!strcmp(node->op,"+"))
+        res = a + b;
+    else if(!strcmp(node->op,"-"))
+        res = a - b;
+    else if(!strcmp(node->op,"*"))
+        res = a * b;
+    else if(!strcmp(node->op,"/") && b)
+        res = a/b;
+    return res;
 }
 
+//performs only for the basic operations (+, -, *, /)
 void const_folding(quad_head* quad){
-  /* Implementation pending */
+  //if both the arguements are numbers then perform the operation during compilation and store the result instead
+    ir_quad* temp = quad->head;
+    double res;
+    while(temp != NULL){
+        if(!strcmp(temp->op,"+") || !strcmp(temp->op,"-") || !strcmp(temp->op,"*") || !strcmp(temp->op,"/")){
+            // printf("%s\n%s\n", temp->arg1, temp->arg2);
+            if((temp->arg1 != NULL && is_number(temp->arg1)) && (temp->arg2 != NULL && is_number(temp->arg2))){
+                //taking care of division by 0 error
+                if(!(!strcmp(temp->op, "/") && !strcmp(temp->arg2, "0"))){
+                    res = perform_arithmetic_op(temp);
+                    temp->arg2 = NULL;
+                    strcpy(temp->op, "=");
+                    //arg1 will store the result, so convert it to string
+                    char c[50]; 
+                    sprintf(c, "%g", res);
+                    strcpy(temp->arg1, c);
+                }
+            }
+        }
+        temp = temp->next;
+    }
 }
 
 void code_optimisation(quad_head* quad){
-
-  //perform deadcode elimination(does only for unnecessary assignments)
-  deadcode_elimination(quad);
 
   //perform constant propagation 
   const_propagation(quad);
 
   //perform constant folding
   const_folding(quad);
+
+  // const_propagation(quad);
 }
