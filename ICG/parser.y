@@ -364,7 +364,8 @@ int checkScope(char* var, int scope){
   }
   else{
     node_t* temp = exists(SymbolTable, var, scope);
-    if(temp && temp->data_type == NULL && temp->scope > scope){
+    //printf("\nCurrent scope : %d, scope : %d\n", scope, temp->scope);
+    if((temp && temp->scope > scope) || (temp->data_type == NULL && temp->scope > scope)){
         ("Variable out of scope");
         printf("\nLine : %d ERROR : Variable '%s' out of scope\n", yylineno, var);
         return 0;
@@ -398,6 +399,11 @@ int main(int argc, char* argv[])
     fclose(yyin);
     fclose(ICG);
     display_ir(Quad);
+
+    code_optimisation(Quad);
+    printf("\n\n\t\t After Code Optimisation");
+    display_ir(Quad);
+
     return 0;
 }
 
@@ -739,4 +745,7 @@ void gencode_array(char *data_type)
 
   push_ICG(temp1);
 }
+
+
+
 
