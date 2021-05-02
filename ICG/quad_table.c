@@ -206,6 +206,9 @@ void const_folding(quad_head* quad){
                     sprintf(c, "%g", res);
                     strcpy(temp->arg1, c);
                 }
+                else{
+                    printf("\n***Warning : Floating point exception encountered(division by 0)***\n");
+                }
             }
         }
         temp = temp->next;

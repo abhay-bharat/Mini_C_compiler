@@ -2,14 +2,6 @@
 
 int main()
 {
-
-	// int a = 1;
-	// int b = 10;
-	// {
-	// 	int p;
-	// }
-	// p = a;
-	// a = b*2;
 	//eg. for deadcode elimination, first deadcode to be removed and then constant propagation is done
 	// int a;
 	// int b = 10;
@@ -20,13 +12,13 @@ int main()
 	/////////////////
 
 	//eg. for constant propagation and constant folding
-        int i = 5;
-        int j = 10;
-       if(i == 5)
-       {
-               i = 1;
-       }
-        ++j;
+       //  int i = 5;
+       //  int j = 10;
+       // if(i == 5)
+       // {
+       //         i = 1;
+       // }
+       //  ++j;
     /////////////////////////////
 
     //eg. for deadcode elimination
@@ -44,5 +36,18 @@ int main()
 	// int a = 11;
 	// int b = a/2;
 	////////////////////////////
+	//eg. for out of scope
+	// int a = 1;
+	// int b = 10;
+	// {
+	// 	int p;
+	// }
+	// p = a;
+	// a = b*2;
+	////////////////////////
+	//eg. division by 0 
+	// int a = 10;
+	// int b = 0;
+	// int c = a/b;
 }
 
